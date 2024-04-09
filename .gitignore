@@ -1,0 +1,11 @@
+# .env file
+.env
+
+# Python file
+__pycache__
+venv
+
+## setuptools
+build
+dist
+*.egg-info
