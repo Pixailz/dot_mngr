@@ -1,3 +1,5 @@
+import sys
+
 from dot_mngr import a
 
 PADDING = "   "
@@ -51,6 +53,7 @@ class	Print():
 			string : str
 		):
 		self.print(string, a.P_FAIL)
+		sys.exit(1)
 
 	def raw(
 			self,

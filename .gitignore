@@ -9,3 +9,7 @@ venv
 build
 dist
 *.egg-info
+
+# TMP file
+tmp.html
+cache

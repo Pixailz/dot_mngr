@@ -1,0 +1,8 @@
+{
+    "value": "https://fossies.org/linux/misc/expect",
+    "type": "fossies",
+    "prefix": "expect",
+    "suffix": ".tar.gz",
+    "link": "https://fossies.org/linux/misc/expect5.45.4.tar.gz",
+    "version": "5.45.4"
+}

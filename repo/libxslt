@@ -1,0 +1,8 @@
+{
+    "value": "https://gitlab.gnome.org/GNOME/libxslt",
+    "type": "gitlab",
+    "prefix": "libxslt-",
+    "suffix": ".tar.gz",
+    "link": "https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.39/libxslt-v1.1.39.tar.gz",
+    "version": "1.1.39"
+}

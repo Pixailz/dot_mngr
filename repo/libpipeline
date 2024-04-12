@@ -1,0 +1,8 @@
+{
+    "value": "https://download.savannah.gnu.org/releases/libpipeline",
+    "type": "apache",
+    "prefix": "libpipeline-",
+    "suffix": ".tar.gz",
+    "link": "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.7.tar.gz",
+    "version": "1.5.7"
+}

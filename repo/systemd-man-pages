@@ -1,0 +1,8 @@
+{
+    "value": "https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-255.tar.xz",
+    "type": "no_scrap",
+    "prefix": "systemd-man-pages-",
+    "suffix": ".tar.xz",
+    "link": "https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-255.tar.xz",
+    "version": "255"
+}

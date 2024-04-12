@@ -1,0 +1,8 @@
+{
+    "value": "https://www.openssl.org/source",
+    "type": "apache",
+    "prefix": "openssl-",
+    "suffix": ".tar.gz",
+    "link": "https://www.openssl.org/source/openssl-3.3.0.tar.gz",
+    "version": "3.3.0"
+}

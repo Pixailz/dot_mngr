@@ -1,0 +1,8 @@
+{
+    "value": "https://www.cpan.org/src",
+    "type": "apache",
+    "prefix": "perl-",
+    "suffix": ".tar.gz",
+    "link": "https://www.cpan.org/src/5.0/perl-5.38.2.tar.gz",
+    "version": "5.38.2"
+}
