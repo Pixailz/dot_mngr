@@ -1,0 +1,9 @@
+{
+    "value": "https://download.savannah.gnu.org/releases/man-db",
+    "type": "apache",
+    "prefix": "man-db-",
+    "suffix": ".tar.xz",
+    "link": "https://download.savannah.gnu.org/releases/man-db/man-db-2.12.1.tar.xz",
+    "version": "2.12.1",
+    "last_checked": 1712899244.968771
+}

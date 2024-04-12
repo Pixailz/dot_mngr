@@ -1,0 +1,9 @@
+{
+    "value": "libffi/libffi",
+    "type": "github",
+    "prefix": "libffi-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-3.4.6.tar.gz",
+    "version": "3.4.6",
+    "last_checked": 1712899244.248436
+}

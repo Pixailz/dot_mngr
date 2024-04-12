@@ -19,6 +19,9 @@ DIR_BASE	= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DIR_REPO	= os.path.join(DIR_BASE, "repo")
 DIR_CACHE	= os.path.join(DIR_BASE, "cache")
 
+FILE_REPO_META = "meta.json"
+FILE_REPO_COMMAND = "command.py"
+
 WRITE_HTML = True
 
 TERM_COLS, TERM_ROWS = os.get_terminal_size()
@@ -103,23 +106,29 @@ PACKAGES	= [
 # ]
 
 # TODO Check why package downloader fail to properly pad, with those package
-PACKAGES = [
-	"acl",
-	"flit-core",
-	"e2fsprogs",
-	"lfs-bootscripts",
-	"libcap",
-	"make-ca",
-	"markup-safe",
-	"ncurses",
-	"pkgconf",
-	"systemd",
-	"sysvinit",
-	"vim",
-	"wheel",
-	"xml-parser",
-	"udev-lfs",
-]
+# PACKAGES = [
+# 	"acl",
+# 	"flit-core",
+# 	"e2fsprogs",
+# 	"lfs-bootscripts",
+# 	"libcap",
+# 	"make-ca",
+# 	"markup-safe",
+# 	"ncurses",
+# 	"pkgconf",
+# 	"systemd",
+# 	"sysvinit",
+# 	"vim",
+# 	"wheel",
+# 	"xml-parser",
+# 	"udev-lfs",
+# ]
+
+# PACKAGES = [
+# 	"bash",
+# 	"less",
+# 	"bc"
+# ]
 
 from	.utils.ansi				import ansi					as a
 from	.utils.print			import _print				as p
@@ -130,4 +139,5 @@ from 	.utils					import unicode				as u
 from 	.cli.main				import CliMain
 
 from 	.scrap					import scrap
+from	.package_command		import DefaultCommand
 from 	.config					import config

@@ -1,0 +1,9 @@
+{
+    "value": "libcheck/check",
+    "type": "github",
+    "prefix": "check-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz",
+    "version": "0.15.2",
+    "last_checked": 1712899241.720089
+}

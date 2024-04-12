@@ -1,0 +1,9 @@
+{
+    "value": "https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod",
+    "type": "apache_no_sort",
+    "prefix": "kmod-",
+    "suffix": ".tar.gz",
+    "link": "https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-32.tar.gz",
+    "version": "32",
+    "last_checked": 1712899244.237827
+}

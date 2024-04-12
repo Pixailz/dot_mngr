@@ -1,0 +1,9 @@
+{
+    "value": "westes/flex",
+    "type": "github",
+    "prefix": "flex-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz",
+    "version": "2.6.4",
+    "last_checked": 1712899242.749798
+}

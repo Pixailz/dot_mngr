@@ -1,8 +1,0 @@
-{
-    "value": "vim/vim",
-    "type": "github_tag",
-    "prefix": "vim-",
-    "suffix": ".tar.gz",
-    "link": "https://github.com/vim/vim/archive/refs/tags/v9.1.0304.tar.gz",
-    "version": "9.1.0304"
-}

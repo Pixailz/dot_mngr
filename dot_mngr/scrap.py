@@ -4,8 +4,6 @@ from urllib.parse import urlparse
 
 from datetime import datetime
 
-from pprint import pprint
-
 from dot_mngr import ENV
 from dot_mngr import p, r, url_handler
 

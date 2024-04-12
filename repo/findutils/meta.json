@@ -1,0 +1,9 @@
+{
+    "value": "https://ftp.gnu.org/gnu/findutils",
+    "type": "apache",
+    "prefix": "findutils-",
+    "suffix": ".tar.xz",
+    "link": "https://ftp.gnu.org/gnu/findutils/findutils-4.9.0.tar.xz",
+    "version": "4.9.0",
+    "last_checked": 1712899242.781297
+}

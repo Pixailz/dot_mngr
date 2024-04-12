@@ -1,0 +1,9 @@
+{
+    "value": "shadow-maint/shadow",
+    "type": "github",
+    "prefix": "shadow-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/shadow-maint/shadow/releases/download/4.15.1/shadow-4.15.1.tar.gz",
+    "version": "4.15.1",
+    "last_checked": 1712899245.695652
+}

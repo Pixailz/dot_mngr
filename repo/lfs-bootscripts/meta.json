@@ -1,0 +1,9 @@
+{
+    "value": "https://www.linuxfromscratch.org/lfs/downloads/12.1/lfs-bootscripts-20230728.tar.xz",
+    "type": "no_scrap",
+    "prefix": "lfs-bootscripts-",
+    "suffix": ".tar.xz",
+    "link": "https://www.linuxfromscratch.org/lfs/downloads/12.1/lfs-bootscripts-20230728.tar.xz",
+    "version": "20230728",
+    "last_checked": 1712899243.655641
+}

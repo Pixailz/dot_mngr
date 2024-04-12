@@ -1,0 +1,9 @@
+{
+    "value": "ninja-build/ninja",
+    "type": "github_tag",
+    "prefix": "ninja-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/ninja-build/ninja/archive/refs/tags/v1.12.0.tar.gz",
+    "version": "1.12.0",
+    "last_checked": 1712899245.50886
+}

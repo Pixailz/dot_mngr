@@ -1,0 +1,9 @@
+{
+    "value": "mirror/ncurses",
+    "type": "github_tag",
+    "prefix": "ncurses-",
+    "suffix": ".tar.gz",
+    "link": "https://github.com/mirror/ncurses/archive/refs/tags/v6.4.tar.gz",
+    "version": "6.4",
+    "last_checked": 1712899245.483059
+}

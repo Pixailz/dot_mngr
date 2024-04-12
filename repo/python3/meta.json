@@ -1,0 +1,9 @@
+{
+    "value": "https://www.python.org/downloads/",
+    "type": "website",
+    "prefix": "Python-",
+    "suffix": ".tar.xz",
+    "link": "https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tar.xz",
+    "version": "3.12.3",
+    "last_checked": 1712899245.273076
+}

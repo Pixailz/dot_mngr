@@ -1,0 +1,9 @@
+{
+    "value": "https://ftp.gnu.org/gnu/gcc",
+    "type": "apache_dir",
+    "prefix": "gcc-",
+    "suffix": ".tar.gz",
+    "link": "https://ftp.gnu.org/gnu/gcc/gcc-13.2.0/gcc-13.2.0.tar.gz",
+    "version": "13.2.0",
+    "last_checked": 1712899243.339589
+}

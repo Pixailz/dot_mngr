@@ -1,0 +1,9 @@
+{
+    "value": "https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/libcap2",
+    "type": "apache_no_sort",
+    "prefix": "libcap-",
+    "suffix": ".tar.gz",
+    "link": "https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.69.tar.gz",
+    "version": "2.69",
+    "last_checked": 1712899244.385161
+}

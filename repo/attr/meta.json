@@ -1,0 +1,9 @@
+{
+    "value": "https://download.savannah.gnu.org/releases/attr",
+    "type": "apache",
+    "prefix": "attr-",
+    "suffix": ".tar.gz",
+    "link": "https://download.savannah.gnu.org/releases/attr/attr-2.5.2.tar.gz",
+    "version": "2.5.2",
+    "last_checked": 1712899242.123781
+}

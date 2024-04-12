@@ -2,6 +2,8 @@
 
 WIP
 
+https://superfastpython.com/threadpoolexecutor-in-python/
+
 ## Update repo
 
 getting newer link providing a link to scrap, wich fit the best with one of the
