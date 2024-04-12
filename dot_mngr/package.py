@@ -78,7 +78,7 @@ class Package():
 			status = "UPTO"
 
 		date = datetime.datetime.fromtimestamp(self.last_checked)
-		date = date.strftime("%d/%m/%Y %H:%M:%S:%f")
+		date = date.strftime("%d/%m/%Y %H:%M:%S")
 		p.info(Package.info_col([
 			(self.name, 20),
 			(self.version, 15),
