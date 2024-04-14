@@ -4,6 +4,5 @@
     "prefix": "MarkupSafe-",
     "suffix": ".tar.gz",
     "link": "https://github.com/pallets/markupsafe/releases/download/2.1.5/MarkupSafe-2.1.5.tar.gz",
-    "version": "2.1.5",
-    "last_checked": 1712899244.986817
+    "version": "2.1.5"
 }

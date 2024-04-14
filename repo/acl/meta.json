@@ -4,6 +4,5 @@
     "prefix": "acl-",
     "suffix": ".tar.gz",
     "link": "https://download.savannah.gnu.org/releases/acl/acl-2.3.2.tar.gz",
-    "version": "2.3.2",
-    "last_checked": 1712899241.888032
+    "version": "2.3.2"
 }

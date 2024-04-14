@@ -4,6 +4,5 @@
     "prefix": "automake-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.gz",
-    "version": "1.16.5",
-    "last_checked": 1712899242.102408
+    "version": "1.16.5"
 }

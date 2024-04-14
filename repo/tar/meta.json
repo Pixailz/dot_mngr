@@ -4,6 +4,5 @@
     "prefix": "tar-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/tar/tar-1.35.tar.gz",
-    "version": "1.35",
-    "last_checked": 1712899246.44399
+    "version": "1.35"
 }

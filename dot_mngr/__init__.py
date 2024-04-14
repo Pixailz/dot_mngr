@@ -1,13 +1,21 @@
 import os
 import re
+import sys
 import enum
 import gzip
 import json
+import tarfile as tar
+import urllib
+import shutil
 import argparse
 import datetime
-import urllib
+import importlib
 
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import wait
 from importlib import metadata as md
+
+from pprint import pprint
 
 NO_ANSI		= False
 LOG_FILE	= None
@@ -19,12 +27,17 @@ DIR_BASE	= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DIR_REPO	= os.path.join(DIR_BASE, "repo")
 DIR_CACHE	= os.path.join(DIR_BASE, "cache")
 
-FILE_REPO_META = "meta.json"
-FILE_REPO_COMMAND = "command.py"
+FILE_META = "meta.json"
+FILE_COMMAND = "command.py"
 
 WRITE_HTML = True
 
 TERM_COLS, TERM_ROWS = os.get_terminal_size()
+
+PROMPT_RIGHT_SIZE = 60
+PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
+
+DO_CHECK = True
 
 _ENV_FILE_	= os.path.join(DIR_BASE, ".env")
 # Load .env file
@@ -140,4 +153,5 @@ from 	.cli.main				import CliMain
 
 from 	.scrap					import scrap
 from	.package_command		import DefaultCommand
-from 	.config					import config
+from	.package				import Package
+from 	.config					import conf

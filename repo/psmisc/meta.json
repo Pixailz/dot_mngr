@@ -4,6 +4,5 @@
     "prefix": "psmisc-",
     "suffix": ".tar.xz",
     "link": "https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.7.tar.xz",
-    "version": "23.7",
-    "last_checked": 1712899246.33827
+    "version": "23.7"
 }

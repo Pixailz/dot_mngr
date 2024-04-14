@@ -4,6 +4,5 @@
     "prefix": "tcl",
     "suffix": "-html.tar.gz",
     "link": "https://fossies.org/linux/misc/tcl8.6.14-html.tar.gz",
-    "version": "8.6.14",
-    "last_checked": 1712899246.462189
+    "version": "8.6.14"
 }

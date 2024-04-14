@@ -1,4 +1,4 @@
-import re
+from dot_mngr import *
 
 class Regex():
 

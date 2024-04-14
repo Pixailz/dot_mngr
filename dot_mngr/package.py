@@ -1,20 +1,11 @@
-import os
-import json
-import datetime
-import importlib.util
-
-from dot_mngr import DIR_REPO, DIR_CACHE
-from dot_mngr import FILE_REPO_META, FILE_REPO_COMMAND
-from dot_mngr import p, r, scrap, url_handler, DefaultCommand
+from dot_mngr import *
 
 class Package():
 	def __init__(self, name):
 		self.name = name
-
 		self.d_base = os.path.join(DIR_REPO, self.name)
-
-		self.f_meta = os.path.join(self.d_base, FILE_REPO_META)
-		self.f_command = os.path.join(self.d_base, FILE_REPO_COMMAND)
+		self.f_meta = os.path.join(self.d_base, FILE_META)
+		self.f_command = os.path.join(self.d_base, FILE_COMMAND)
 
 		self.load_meta()
 		self.load_command()
@@ -35,7 +26,8 @@ class Package():
 		self.suffix = meta.get("suffix")
 		self.link = meta.get("link")
 		self.version = meta.get("version")
-		self.last_checked = meta.get("last_checked")
+		self.file_name = f"{self.name}-{self.version}{self.suffix}"
+		self.file_path = os.path.join(DIR_CACHE, self.file_name)
 		self.repo_status = None
 		f.close()
 
@@ -62,7 +54,6 @@ class Package():
 			("Name", 20),
 			("Version", 15),
 			("Status", 8),
-			("Last Checked", 20),
 			("Link", 40),
 		]) + "\n")
 
@@ -77,13 +68,10 @@ class Package():
 		elif self.repo_status == 2:
 			status = "UPTO"
 
-		date = datetime.datetime.fromtimestamp(self.last_checked)
-		date = date.strftime("%d/%m/%Y %H:%M:%S")
 		p.info(Package.info_col([
 			(self.name, 20),
 			(self.version, 15),
 			(status, 8),
-			(date, 20),
 			(self.link, 40),
 		]))
 
@@ -96,8 +84,6 @@ class Package():
 		else:
 			self.repo_status = 2
 
-		self.last_checked = datetime.datetime.now().timestamp()
-			# .strftime("%d/%m/%Y %H:%M:%S")
 		self.link = self.new_link
 		self.version = self.new_version if self.new_version else self.version
 		with open(self.f_meta, "w") as f:
@@ -108,7 +94,6 @@ class Package():
 				"suffix": self.suffix,
 				"link": self.link,
 				"version": self.version,
-				"last_checked": self.last_checked,
 			}, f, indent=4)
 
 	def update(self):
@@ -117,17 +102,10 @@ class Package():
 		self.info()
 
 	def get_file(self):
-		self.tar_name = f"{self.name}-{self.version}.tar.gz"
-		self.tar_path = os.path.join(DIR_CACHE, self.tar_name)
-		if not os.path.exists(self.tar_path):
+		if not os.path.exists(self.file_path):
 			if not url_handler.download_package(self):
 				return False
 			else:
 				return True
-		p.success(f"{self.tar_name} already exists")
+		p.success(f"{self.file_name} already exists")
 		return True
-
-	def install(self):
-		if not self.get_file():
-			return False
-		p.info(f"installing {self.name}")

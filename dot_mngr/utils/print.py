@@ -1,6 +1,4 @@
-import sys
-
-from dot_mngr import a
+from dot_mngr import *
 
 PADDING = "   "
 

@@ -1,13 +1,11 @@
 from dot_mngr import *
 
 def	main():
-	config.update_repo()
-	config.info_package()
-	for pack in config.packages.values():
-		pack.command.configure()
-		pack.command.compile()
-		pack.command.check()
-		pack.command.install()
+	conf.update_repo()
+	conf.info_package()
+	conf.packages["bc"].command.suite()
+	for pack in conf.packages.values():
+		pack.command.suite()
 		print()
 
 if __name__ == "__main__":

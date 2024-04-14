@@ -4,6 +4,5 @@
     "prefix": "m4-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.gz",
-    "version": "1.4.19",
-    "last_checked": 1712899244.816102
+    "version": "1.4.19"
 }

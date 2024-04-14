@@ -4,6 +4,5 @@
     "prefix": "udev-lfs-",
     "suffix": ".tar.xz",
     "link": "https://anduin.linuxfromscratch.org/LFS/udev-lfs-20230818.tar.xz",
-    "version": "20230818",
-    "last_checked": 1712899245.980699
+    "version": "20230818"
 }

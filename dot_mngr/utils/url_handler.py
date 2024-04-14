@@ -1,12 +1,4 @@
-from urllib import request as urequest
-import gzip
-import os
-
-from dot_mngr import WRITE_HTML, TERM_COLS, TERM_ROWS
-from dot_mngr import p, a
-
-PROMPT_RIGHT_SIZE = 60
-PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
+from dot_mngr import *
 
 def req_decode(resp):
 	if resp.info().get("Content-Encoding") == "gzip":
@@ -24,8 +16,8 @@ def req_decode(resp):
 
 def req_open(request):
 	try:
-		resp = urequest.urlopen(request)
-	except urequest.HTTPError as e:
+		resp = urllib.request.urlopen(request)
+	except urllib.request.HTTPError as e:
 		if e.code == 410 and request.host == "fossies.org":
 			return req_decode(e)
 		else:
@@ -40,7 +32,6 @@ def req(request):
 		with open("tmp.html", "w") as f:
 			f.write(html)
 	return html
-
 
 class Downloader():
 
@@ -59,12 +50,12 @@ class Downloader():
 			pb_status = a.P_PASS
 			pb_perc = "100.00"
 
-		prompt_right = f"{pb_perc}% [{pb_full.ljust(PROMPT_PROGRESS_BAR_SIZE, " ")}]"
-		pos_prompt_right = TERM_COLS - len(prompt_right) + 1
+		p_right = f"{pb_perc}% [{pb_full.ljust(PROMPT_PROGRESS_BAR_SIZE, " ")}]"
+		pos_p_right = TERM_COLS - len(p_right) + 1
 
 		print(
 			f"\x1b[G\x1b[2K{pb_status} {self.file_path}"
-			f"\x1b[{pos_prompt_right}G{prompt_right}"
+			f"\x1b[{pos_p_right}G{p_right}"
 			, end=""
 		)
 
@@ -72,11 +63,13 @@ def download_package(package):
 	if package.link == None:
 		p.warn("Could not download package, not link found")
 		return False
-	pack = Downloader(package.tar_path)
+	pack = Downloader(package.file_path)
 	try:
-		urequest.urlretrieve(package.link, package.tar_path, pack.progress_hook)
-	except urequest.URLError:
-		p.fail(f"Failed to download {package.name} from {package.link}")
+		urllib.request.urlretrieve(
+			package.link, package.file_path, pack.progress_hook
+		)
+	except urllib.request.URLError:
+		p.fail(f"Failed to download {package.file_name} from {package.link}")
 		return False
 	print()
 	return True

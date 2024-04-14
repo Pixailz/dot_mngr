@@ -4,6 +4,5 @@
     "prefix": "coreutils-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
-    "version": "9.4",
-    "last_checked": 1712899241.36711
+    "version": "9.4"
 }

@@ -4,6 +4,5 @@
     "prefix": "libpipeline-",
     "suffix": ".tar.gz",
     "link": "https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.7.tar.gz",
-    "version": "1.5.7",
-    "last_checked": 1712899244.647458
+    "version": "1.5.7"
 }

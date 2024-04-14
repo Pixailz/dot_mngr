@@ -4,6 +4,5 @@
     "prefix": "file-",
     "suffix": ".tar.gz",
     "link": "https://astron.com/pub/file/file-5.45.tar.gz",
-    "version": "5.45",
-    "last_checked": 1712899242.755135
+    "version": "5.45"
 }

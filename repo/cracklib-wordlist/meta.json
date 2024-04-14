@@ -4,6 +4,5 @@
     "prefix": "cracklib-words-",
     "suffix": ".gz",
     "link": "https://github.com/cracklib/cracklib/releases/download/v2.9.11/cracklib-words-2.9.11.gz",
-    "version": "2.9.11",
-    "last_checked": 1712899241.666386
+    "version": "2.9.11"
 }

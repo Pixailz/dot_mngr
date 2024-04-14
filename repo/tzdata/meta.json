@@ -4,6 +4,5 @@
     "prefix": "tzdata",
     "suffix": ".tar.gz",
     "link": "https://data.iana.org/time-zones/releases/tzdata2024a.tar.gz",
-    "version": "2024a",
-    "last_checked": 1712899246.905026
+    "version": "2024a"
 }

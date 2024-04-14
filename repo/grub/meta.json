@@ -4,6 +4,5 @@
     "prefix": "grub-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/grub/grub-2.12.tar.gz",
-    "version": "2.12",
-    "last_checked": 1712899243.533411
+    "version": "2.12"
 }

@@ -4,6 +4,5 @@
     "prefix": "bzip2-",
     "suffix": ".tar.gz",
     "link": "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
-    "version": "1.0.8",
-    "last_checked": 1712899241.830274
+    "version": "1.0.8"
 }

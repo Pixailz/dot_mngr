@@ -4,6 +4,5 @@
     "prefix": "util-linux-",
     "suffix": ".tar.gz",
     "link": "https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.39/util-linux-2.39.4.tar.gz",
-    "version": "2.39.4",
-    "last_checked": 1712899245.981549
+    "version": "2.39.4"
 }

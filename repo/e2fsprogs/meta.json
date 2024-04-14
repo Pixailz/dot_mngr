@@ -4,6 +4,5 @@
     "prefix": "e2fsprogs-",
     "suffix": ".tar.gz",
     "link": "https://github.com/tytso/e2fsprogs/archive/refs/tags/v1.47.0.tar.gz",
-    "version": "1.47.0",
-    "last_checked": 1712899242.949871
+    "version": "1.47.0"
 }

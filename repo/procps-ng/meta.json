@@ -4,6 +4,5 @@
     "prefix": "procps-ng-",
     "suffix": ".tar.xz",
     "link": "https://fossies.org/linux/misc/procps-ng-4.0.4.tar.xz",
-    "version": "4.0.4",
-    "last_checked": 1712899245.69436
+    "version": "4.0.4"
 }

@@ -4,6 +4,5 @@
     "prefix": "make-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz",
-    "version": "4.4.1",
-    "last_checked": 1712899244.740357
+    "version": "4.4.1"
 }

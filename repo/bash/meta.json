@@ -4,6 +4,5 @@
     "prefix": "bash-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/bash/bash-5.2.21.tar.gz",
-    "version": "5.2.21",
-    "last_checked": 1712899241.881156
+    "version": "5.2.21"
 }

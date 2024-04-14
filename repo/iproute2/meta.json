@@ -4,6 +4,5 @@
     "prefix": "iproute2-",
     "suffix": ".tar.gz",
     "link": "https://mirrors.edge.kernel.org/pub/linux/utils/net/iproute2/iproute2-6.8.0.tar.gz",
-    "version": "6.8.0",
-    "last_checked": 1712899244.247659
+    "version": "6.8.0"
 }

@@ -4,6 +4,5 @@
     "prefix": "readline-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/readline/readline-8.2.tar.gz",
-    "version": "8.2",
-    "last_checked": 1712899246.010427
+    "version": "8.2"
 }

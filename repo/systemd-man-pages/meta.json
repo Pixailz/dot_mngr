@@ -4,6 +4,5 @@
     "prefix": "systemd-man-pages-",
     "suffix": ".tar.xz",
     "link": "https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-255.tar.xz",
-    "version": "255",
-    "last_checked": 1712899245.474564
+    "version": "255"
 }

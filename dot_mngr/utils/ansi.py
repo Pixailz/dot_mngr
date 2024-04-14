@@ -1,4 +1,4 @@
-from dot_mngr import NO_ANSI
+from dot_mngr import *
 
 class Ansi():
 	def	__init__(
