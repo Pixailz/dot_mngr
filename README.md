@@ -1,4 +1,4 @@
-# A package manager for architecture and not for distribution
+# dot_mngr
 
 WIP
 
