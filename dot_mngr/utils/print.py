@@ -59,4 +59,10 @@ class	Print():
 		):
 		self.print(string, end="")
 
+	def cmd(
+			self,
+			string : str
+		):
+		self.print(string, a.P_CMD)
+
 _print = Print()

@@ -11,6 +11,8 @@ class Config():
 			os.mkdir(DIR_REPO)
 		if not os.path.exists(DIR_CACHE):
 			os.mkdir(DIR_CACHE)
+		if not os.path.exists(DIR_LOG):
+			os.mkdir(DIR_LOG)
 
 	def get_packages(self):
 		self.packages = dict()
@@ -40,8 +42,8 @@ class Config():
 		p.info(msg + "\n")
 
 	def info_package(self):
-		Package.hdr_info()
 		self.print_last_checked()
+		Package.hdr_info()
 		for package in self.packages.values():
 			package.info()
 

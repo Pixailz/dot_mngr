@@ -41,6 +41,7 @@ class Ansi():
 		self.P_WARN = f"[{self.ORA}!{self.RST}]"
 		self.P_PASS = f"[{self.GRE}+{self.RST}]"
 		self.P_FAIL = f"[{self.RED}-{self.RST}]"
+		self.P_CMD = f"[{self.GRE}{self.BOL}>{self.RST}{self.RBOL}]"
 
 	def	remove_ansi(
 			self

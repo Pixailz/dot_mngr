@@ -8,15 +8,20 @@ class Command(DefaultCommand):
 
 	def configure(self):
 		super().configure(True)
-		proc = self.cmd_run("CC=gcc ./configure --prefix=/usr -G -O3 -r")
-
-	def compile(self):
-		super().compile(True)
-		proc = self.cmd_run("make")
+		proc = self.cmd_run(
+			"./configure --prefix=/usr"
+			" --disable-static"
+			" --docdir=/usr/share/doc/attr-" + self.package.version +
+			" --sysconfdir=/etc"
+		)
 
 	def check(self):
 		super().check(True)
 		proc = self.cmd_run("make check")
+
+	def compile(self):
+		super().compile(True)
+		proc = self.cmd_run("make")
 
 	def install(self):
 		super().install(True)

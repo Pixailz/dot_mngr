@@ -10,6 +10,8 @@ import shutil
 import argparse
 import datetime
 import importlib
+import selectors
+import subprocess
 
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
@@ -26,11 +28,12 @@ DIR_BASE	= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 DIR_REPO	= os.path.join(DIR_BASE, "repo")
 DIR_CACHE	= os.path.join(DIR_BASE, "cache")
+DIR_LOG		= os.path.join(DIR_BASE, "log")
 
 FILE_META = "meta.json"
 FILE_COMMAND = "command.py"
 
-WRITE_HTML = True
+WRITE_HTML = False
 
 TERM_COLS, TERM_ROWS = os.get_terminal_size()
 

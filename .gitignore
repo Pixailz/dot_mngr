@@ -13,3 +13,4 @@ dist
 # TMP file
 tmp.html
 cache
+log
