@@ -1,6 +1,6 @@
 {
-    "value": "https://ftp.gnu.org/gnu/bash/bash-5.2.21.tar.gz",
-    "type": "no_scrap",
+    "value": "https://ftp.gnu.org/gnu/bash",
+    "type": "apache",
     "prefix": "bash-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/bash/bash-5.2.21.tar.gz",

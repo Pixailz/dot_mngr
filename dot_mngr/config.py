@@ -3,7 +3,6 @@ from dot_mngr import *
 class Config():
 	def __init__(self, ):
 		self.create_dir()
-		self.get_packages()
 		self.load_meta()
 
 	def create_dir(self):
@@ -13,11 +12,6 @@ class Config():
 			os.mkdir(DIR_CACHE)
 		if not os.path.exists(DIR_LOG):
 			os.mkdir(DIR_LOG)
-
-	def get_packages(self):
-		self.packages = dict()
-		for package in PACKAGES:
-			self.packages[package] = Package(package)
 
 	def load_meta(self):
 		meta = None
@@ -31,6 +25,11 @@ class Config():
 		self.last_checked = None
 		if meta:
 			self.last_checked = meta.get("last_checked")
+
+	def load_packages(self):
+		self.packages = dict()
+		for package in PACKAGES:
+			self.packages[package] = Package(package)
 
 	def print_last_checked(self):
 		msg = "Last checked: "

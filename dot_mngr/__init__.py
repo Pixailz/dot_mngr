@@ -40,7 +40,7 @@ TERM_COLS, TERM_ROWS = os.get_terminal_size()
 PROMPT_RIGHT_SIZE = 60
 PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
 
-DO_CHECK = True
+DO_CHECK = False
 
 _ENV_FILE_	= os.path.join(DIR_BASE, ".env")
 # Load .env file
@@ -141,14 +141,16 @@ PACKAGES	= [
 # ]
 
 # PACKAGES = [
-# 	"bash",
-# 	"less",
+# 	# "bash",
+# 	# "less",
+# 	"linux",
 # 	"bc"
 # ]
 
 from	.utils.ansi				import ansi					as a
 from	.utils.print			import _print				as p
 from 	.utils.regex			import regex				as r
+from 	.utils.progress_bar		import ProgressBar
 from 	.utils					import url_handler
 from 	.utils					import unicode				as u
 

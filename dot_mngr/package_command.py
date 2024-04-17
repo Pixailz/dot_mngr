@@ -49,13 +49,19 @@ class DefaultCommand():
 			out = stream.readline()
 			if out:
 				self.f_log_out.write(out)
-				p.cmd(out.decode("utf-8").strip("\n"))
+				try:
+					p.cmd(out.decode("utf-8").strip("\n"))
+				except UnicodeDecodeError as e:
+					p.warn("Cannot decode output")
 
 		def p_err(stream):
 			err = stream.readline()
 			if err:
 				self.f_log_err.write(err)
-				p.warn(err.decode("utf-8").strip("\n"))
+				try:
+					p.warn(err.decode("utf-8").strip("\n"))
+				except UnicodeDecodeError as e:
+					p.warn("Cannot decode output")
 
 		proc = subprocess.Popen(cmd,
 			stdout=subprocess.PIPE,
@@ -82,6 +88,10 @@ class DefaultCommand():
 			p.fail(f"Command failed:\n[{cmd}]({retv})")
 
 		return retv
+
+	def apply_patch(self, url, opt, name):
+		url_handler.download_file(url, self.package.tar_folder + name)
+		self.cmd_run(f"patch {opt} -i {self.package.tar_folder + name}")
 
 	@a_method
 	def configure(self, is_implemented):

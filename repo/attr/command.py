@@ -15,13 +15,13 @@ class Command(DefaultCommand):
 			" --sysconfdir=/etc"
 		)
 
-	def check(self):
-		super().check(True)
-		proc = self.cmd_run("make check")
-
 	def compile(self):
 		super().compile(True)
 		proc = self.cmd_run("make")
+
+	def check(self):
+		super().check(True)
+		proc = self.cmd_run("make check")
 
 	def install(self):
 		super().install(True)
