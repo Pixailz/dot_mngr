@@ -49,4 +49,4 @@ def download_file(url, path):
 	return True
 
 def download_package(package):
-	download_file(package.link, package.file_path)
+	return download_file(package.link, package.file_path)

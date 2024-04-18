@@ -19,28 +19,40 @@ from importlib import metadata as md
 
 from pprint import pprint
 
-NO_ANSI		= False
-LOG_FILE	= None
-METADATA	= md.metadata("dot_mngr")
+NO_ANSI			= False
+LOG_FILE		= None
+WRITE_HTML		= False
+DO_CHECK		= False
+USE_LOCAL_HOME	= True
+DO_CHROOT		= False # TODO Implement chroot
 
-CWD			= os.getcwd()
-DIR_BASE	= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+HOST_TRIPLET	= subprocess.run(
+	"gcc -dumpmachine",
+	shell=True,
+	capture_output=True
+).stdout.decode("utf-8").strip("\n")
 
-DIR_REPO	= os.path.join(DIR_BASE, "repo")
-DIR_CACHE	= os.path.join(DIR_BASE, "cache")
-DIR_LOG		= os.path.join(DIR_BASE, "log")
+if USE_LOCAL_HOME:
+	CNF_PREFIX	= os.path.expanduser("~/.local")
+else:
+	CNF_PREFIX	= "/usr"
 
-FILE_META = "meta.json"
-FILE_COMMAND = "command.py"
+METADATA		= md.metadata("dot_mngr")
 
-WRITE_HTML = False
+CWD				= os.getcwd()
+DIR_BASE		= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+DIR_REPO		= os.path.join(DIR_BASE, "repo")
+DIR_CACHE		= os.path.join(DIR_BASE, "cache")
+DIR_LOG			= os.path.join(DIR_BASE, "log")
+
+FILE_META		= "meta.json"
+FILE_COMMAND	= "command.py"
 
 TERM_COLS, TERM_ROWS = os.get_terminal_size()
 
 PROMPT_RIGHT_SIZE = 60
 PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
-
-DO_CHECK = False
 
 _ENV_FILE_	= os.path.join(DIR_BASE, ".env")
 # Load .env file
@@ -143,20 +155,25 @@ PACKAGES	= [
 # PACKAGES = [
 # 	# "bash",
 # 	# "less",
-# 	"linux",
-# 	"bc"
+# 	# "linux",
+# 	# "bc"
+# 	# "acl"
 # ]
 
 from	.utils.ansi				import ansi					as a
-from	.utils.print			import _print				as p
 from 	.utils.regex			import regex				as r
 from 	.utils.progress_bar		import ProgressBar
 from 	.utils					import url_handler
 from 	.utils					import unicode				as u
 
+from	.utils._print			import _print				as p
+
+from 	.utils._os				import mkdir
+from 	.utils._os				import take
+from 	.utils._json			import json_load
+
 from 	.cli.main				import CliMain
 
 from 	.scrap					import scrap
-from	.package_command		import DefaultCommand
 from	.package				import Package
 from 	.config					import conf

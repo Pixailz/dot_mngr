@@ -1,30 +1,22 @@
 from dot_mngr import *
 
+
 class Config():
 	def __init__(self, ):
 		self.create_dir()
 		self.load_meta()
 
 	def create_dir(self):
-		if not os.path.exists(DIR_REPO):
-			os.mkdir(DIR_REPO)
-		if not os.path.exists(DIR_CACHE):
-			os.mkdir(DIR_CACHE)
-		if not os.path.exists(DIR_LOG):
-			os.mkdir(DIR_LOG)
+		mkdir(DIR_REPO)
+		mkdir(DIR_CACHE)
+		mkdir(DIR_LOG, True)
 
 	def load_meta(self):
-		meta = None
-		if os.path.exists(os.path.join(DIR_REPO, FILE_META)):
-			with open(os.path.join(DIR_REPO, FILE_META), "r") as f:
-				try:
-					meta = json.load(f)
-				except json.JSONDecodeError:
-					p.fail("Failed to load repo meta.json")
+		meta = json_load(os.path.join(DIR_REPO, FILE_META))
 
-		self.last_checked = None
-		if meta:
-			self.last_checked = meta.get("last_checked")
+		if not meta:
+			meta = dict()
+		self.last_checked = meta.get("last_checked")
 
 	def load_packages(self):
 		self.packages = dict()

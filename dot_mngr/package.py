@@ -1,5 +1,37 @@
 from dot_mngr import *
 
+def default_configure(self):
+	p.warn(f"Configure command not found for {self.name}")
+
+def default_compile(self):
+	p.warn(f"Compile command not found for {self.name}")
+
+def default_check(self):
+	p.warn(f"Check command not found for {self.name}")
+
+def default_install(self):
+	p.warn(f"Install command not found for {self.name}")
+
+def default_uninstall(self):
+	p.warn(f"Uninstall command not found for {self.name}")
+
+def default_suite(self):
+	self.cmd["configure"]()
+	self.cmd["compile"]()
+	if DO_CHECK:
+		self.cmd["check"]()
+	self.cmd["install"]()
+	shutil.rmtree(self.tar_folder)
+
+def a_cmd(self, func, title = None):
+	def wrapper():
+		if title:
+			p.info(f"Running {title} for {self.name}-{self.version}")
+		if not self.prepared:
+			self.prepare()
+		func(self)
+	return wrapper
+
 class Package():
 	def __init__(self, name):
 		self.name = name
@@ -7,18 +39,16 @@ class Package():
 		self.f_meta = os.path.join(self.d_base, FILE_META)
 		self.f_command = os.path.join(self.d_base, FILE_COMMAND)
 
+		self.prepared = False
+		self.log_out = os.path.join(DIR_LOG, f"{self.name}.out.log")
+		self.log_err = os.path.join(DIR_LOG, f"{self.name}.err.log")
+
 		self.load_meta()
 		self.load_command()
 
 	def load_meta(self):
-		if os.path.exists(self.f_meta):
-			f = open(self.f_meta, "r")
-		else:
-			return None
-		try:
-			meta = json.load(f)
-		except json.JSONDecodeError:
-			p.fail(f"Failed to load {f.name}")
+		meta = json_load(self.f_meta)
+		if not meta:
 			return None
 		self.value = meta.get("value")
 		self.type = meta.get("type")
@@ -29,51 +59,113 @@ class Package():
 		self.file_name = f"{self.name}-{self.version}{self.suffix}"
 		self.file_path = os.path.join(DIR_CACHE, self.file_name)
 		self.repo_status = None
-		f.close()
+
+	# def load_command(self):
+	# 	if os.path.exists(self.f_command):
+	# 		spec = importlib.util.spec_from_file_location("command", self.f_command)
+	# 		tmp = importlib.util.module_from_spec(spec)
+	# 		spec.loader.exec_module(tmp)
+	# 		self.command = tmp.Command(self)
+	# 	else:
+	# 		self.command = DefaultCommand(self)
 
 	def load_command(self):
+		self.cmd = dict()
+		tmp_cmd = None
 		if os.path.exists(self.f_command):
 			spec = importlib.util.spec_from_file_location("command", self.f_command)
-			tmp = importlib.util.module_from_spec(spec)
-			spec.loader.exec_module(tmp)
-			self.command = tmp.Command(self)
+			tmp_cmd = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(tmp_cmd)
+
+		if getattr(tmp_cmd, "configure", None):
+			self.cmd["configure"] = a_cmd(self, tmp_cmd.configure, "configure")
 		else:
-			self.command = DefaultCommand(self)
+			self.cmd["configure"] = a_cmd(self, default_configure)
+
+		if getattr(tmp_cmd, "compile", None):
+			self.cmd["compile"] = a_cmd(self, tmp_cmd.compile, "compile")
+		else:
+			self.cmd["compile"] = a_cmd(self, default_compile)
+
+		if getattr(tmp_cmd, "check", None):
+			self.cmd["check"] = a_cmd(self, tmp_cmd.check, "check")
+		else:
+			self.cmd["check"] = a_cmd(self, default_check)
+
+		if getattr(tmp_cmd, "install", None):
+			self.cmd["install"] = a_cmd(self, tmp_cmd.install, "install")
+		else:
+			self.cmd["install"] = a_cmd(self, default_install)
+
+		if getattr(tmp_cmd, "uninstall", None):
+			self.cmd["uninstall"] = a_cmd(self, tmp_cmd.uninstall, "uninstall")
+		else:
+			self.cmd["uninstall"] = a_cmd(self, default_uninstall)
+
+		if getattr(tmp_cmd, "suite", None):
+			self.cmd["suite"] = a_cmd(self, tmp_cmd.suite, "suite")
+		else:
+			self.cmd["suite"] = a_cmd(self, default_suite)
+
+	def prepare(self):
+		from dot_mngr import conf
+
+		if not os.path.exists(self.file_path):
+			self.get_file()
+		if tar.is_tarfile(self.file_path):
+			self.prepare_tarball()
+		self.conf = conf
+		self.f_log_out = open(self.log_out, "ab")
+		self.f_log_err = open(self.log_err, "ab")
+		if os.getcwd() != self.tar_folder:
+			os.chdir(self.tar_folder)
+		self.prepared = True
+
+	def prepare_tarball(self):
+		ftar = tar.open(self.file_path, "r")
+		ftar_names = ftar.getnames()
+		if len(ftar_names) > 0:
+			match = r.tar_dir.match(ftar_names[0])
+			if match:
+				ftar_name = match.group(1)
+			else:
+				ftar_name = ftar_names[0]
+			self.tar_folder = os.path.join(DIR_CACHE, ftar_name)
+			if os.path.exists(self.tar_folder):
+				shutil.rmtree(self.tar_folder)
+				p.warn("Removing old tar folder")
+		ftar.extractall(DIR_CACHE)
 
 	@staticmethod
-	def info_col(info):
-		string = str()
-		for i in info:
-			tmp = i[0] or ""
-			string += tmp.ljust(i[1] - 1) + " "
-		return string
+	def info_col(
+			name,
+			status,
+			version = "None",
+			link = "None"
+		):
+		return p.col([
+			(name, 20),
+			(version, 15),
+			(status, 15),
+			(link, 30),
+		])
 
 	@staticmethod
 	def hdr_info():
-		p.info(Package.info_col([
-			("Name", 20),
-			("Version", 15),
-			("Status", 8),
-			("Link", 40),
-		]) + "\n")
+		p.info(Package.info_col("Name","Status", "Version", "Link") + "\n")
 
 	def info(self):
 		pfunc = p.info
-		status = "UNTO"
+		status = "Untouched"
 		if self.repo_status == 0:
-			status = "FAIL"
+			status = "Failed"
 			pfunc = p.fail
 		elif self.repo_status == 1:
-			status = "UPDA"
+			status = "Updated"
 		elif self.repo_status == 2:
-			status = "UPTO"
+			status = "Up-to-date"
 
-		p.info(Package.info_col([
-			(self.name, 20),
-			(self.version, 15),
-			(status, 8),
-			(self.link, 40),
-		]))
+		pfunc(Package.info_col(self.name, status, self.version, self.link))
 
 	def save_update(self):
 		if self.new_link == None:
@@ -86,6 +178,8 @@ class Package():
 
 		self.link = self.new_link
 		self.version = self.new_version if self.new_version else self.version
+		self.file_name = f"{self.name}-{self.version}{self.suffix}"
+		self.file_path = os.path.join(DIR_CACHE, self.file_name)
 		with open(self.f_meta, "w") as f:
 			json.dump({
 				"value": self.value,
@@ -109,3 +203,54 @@ class Package():
 				return True
 		p.success(f"{self.file_name} already exists")
 		return True
+
+	def cmd_run(self, cmd : str):
+		def p_out(stream):
+			out = stream.readline()
+			if out:
+				self.f_log_out.write(out)
+				try:
+					p.cmdo(out.decode("utf-8").strip("\n"))
+				except UnicodeDecodeError as e:
+					p.warn("Cannot decode output")
+
+		def p_err(stream):
+			err = stream.readline()
+			if err:
+				self.f_log_err.write(err)
+				try:
+					p.cmde(err.decode("utf-8").strip("\n"))
+				except UnicodeDecodeError as e:
+					p.warn("Cannot decode output")
+
+		proc = subprocess.Popen(cmd,
+			stdout=subprocess.PIPE,
+			stderr=subprocess.PIPE,
+			shell=True,
+			close_fds=True,
+		)
+
+		sel = selectors.DefaultSelector()
+		sel.register(proc.stdout, selectors.EVENT_READ, p_out)
+		sel.register(proc.stderr, selectors.EVENT_READ, p_err)
+
+		while proc.poll() is None:
+			events = sel.select()
+			for key, mask in events:
+				callback = key.data
+				callback(key.fileobj)
+
+		retv = proc.wait()
+		sel.close()
+
+		if retv != 0:
+			p.fail(f"Command failed:\n[{cmd}]({retv})")
+
+		return retv
+
+	def apply_patch(self, opt, path):
+		self.cmd_run(f"patch {opt} -i {path}")
+
+	def dapply_patch(self, url, opt, name):
+		url_handler.download_file(url, self.tar_folder + name)
+		self.apply_patch(opt, self.tar_folder + name)

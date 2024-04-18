@@ -59,10 +59,24 @@ class	Print():
 		):
 		self.print(string, end="")
 
-	def cmd(
+	@staticmethod
+	def col(cols):
+		string = str()
+		for c in cols:
+			tmp = c[0] or ""
+			string += tmp.ljust(c[1] - 1) + " "
+		return string
+
+	def cmdo(
 			self,
 			string : str
 		):
-		self.print(string, a.P_CMD)
+		self.print(string, a.P_CMD_OUT)
+
+	def cmde(
+			self,
+			string : str
+		):
+		self.print(string, a.P_CMD_ERR)
 
 _print = Print()

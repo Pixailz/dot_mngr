@@ -20,6 +20,7 @@ class Regex():
 			self.re_href + self.re_not_dot + r'(.*?' +
 			self.re_filter_version + r'.*?)/".*'
 		)
+		self.tar_dir = re.compile(r'(.*?)/.*?')
 
 	def href(self, pack, html):
 		try:
