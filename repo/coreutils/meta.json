@@ -5,5 +5,17 @@
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
     "version": "9.4",
-    "dependencies": null
+    "dependencies": {
+        "required": [
+			"acl",
+			"attr",
+			"autoconf",
+			"automake",
+			"glibc",
+			"gmp",
+			"libcap",
+			"openssl"
+        ]
+    }
 }
+

@@ -112,7 +112,7 @@ class Scrap():
 			f"https://api.github.com/repos/{package.value}/releases/latest"
 		)
 		if ENV["GITHUB_PAT"]:
-			req.add_header("Authorization", f"Bearer {ENV["GITHUB_PAT"]}")
+			req.add_header("Authorization", f"Bearer {ENV['GITHUB_PAT']}")
 		html = url_handler.req(req)
 		tmp = json.loads(html)
 

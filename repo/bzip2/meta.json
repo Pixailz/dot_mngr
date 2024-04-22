@@ -8,16 +8,7 @@
     "dependencies": {
         "required": [
             "glibc",
-            "jansson",
-            "libelf",
-            "zlib",
-            "zstd"
-        ],
-        "optional": [
-            "debuginfod",
-            "git",
-            "bc",
-            "dejagnu"
+            "bash"
         ]
     }
 }

@@ -23,7 +23,7 @@ def get_dependencies(pack):
 
 	if package.dependencies:
 		if package.dependencies.get("required"):
-			to_install += package.dependencies["required"]
+			to_install += [ pack for pack in package.dependencies["required"] if pack in conf.packages ]
 		# if package.dependencies.get("optional"):
 		#	to_install += package.dependencies["optional"]
 
@@ -79,7 +79,6 @@ def install_depencencies(self):
 	to_install = get_not_installed_dependencies(to_install)
 
 	pprint(to_install)
-	sys.exit(130)
 
 	# for i in to_install:
 	# 	if not self.conf.packages.get(i):

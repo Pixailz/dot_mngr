@@ -154,11 +154,11 @@ PACKAGES	= [
 # ]
 
 # PACKAGES = [
-# 	"bash",
-# 	"less",
-# 	"linux",
+# 	# "bash",
+# 	# "less",
+# 	# "linux",
 # 	"bc"
-# 	"acl"
+# 	# "acl"
 # ]
 
 from	.utils.ansi				import ansi					as a

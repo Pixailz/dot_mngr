@@ -5,5 +5,18 @@
     "suffix": ".tar.gz",
     "link": "https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz",
     "version": "0.15.2",
-    "dependencies": null
+    "dependencies": {
+        "required": [
+            "awk",
+            "ncurses",
+            "readline"
+        ],
+        "optional": [
+            "check-docs",
+			"cmake",
+			"doxygen",
+			"git",
+			"texinfo"
+        ]
+    }
 }

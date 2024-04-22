@@ -20,7 +20,7 @@ class ProgressBar():
 			pb_status = a.P_PASS
 			pb_perc = "100.00"
 
-		p_right = f"{pb_perc}% [{pb_full.ljust(PROMPT_PROGRESS_BAR_SIZE, " ")}]"
+		p_right = f"{pb_perc}% [{pb_full.ljust(PROMPT_PROGRESS_BAR_SIZE, ' ')}]"
 		pos_p_right = TERM_COLS - len(p_right) + 1
 
 		print(

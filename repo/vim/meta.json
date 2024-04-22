@@ -3,7 +3,7 @@
     "type": "github_tag",
     "prefix": "vim-",
     "suffix": ".tar.gz",
-    "link": "https://github.com/vim/vim/archive/refs/tags/v9.1.0354.tar.gz",
-    "version": "9.1.0354",
+    "link": "https://github.com/vim/vim/archive/refs/tags/v9.1.0363.tar.gz",
+    "version": "9.1.0363",
     "dependencies": null
 }
