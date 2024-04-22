@@ -4,5 +4,6 @@
     "prefix": "sysklogd-",
     "suffix": ".tar.gz",
     "link": "https://www.infodrom.org/projects/sysklogd/download/sysklogd-1.5.1.tar.gz",
-    "version": "1.5.1"
+    "version": "1.5.1",
+    "dependencies": null
 }

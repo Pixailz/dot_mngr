@@ -53,6 +53,18 @@ class	Print():
 		self.print(string, a.P_FAIL)
 		sys.exit(1)
 
+	def	title(
+			self,
+			string : str
+		):
+		self.print(string, a.P_TITL)
+
+	def	dr(
+			self,
+			string : str
+		):
+		self.print(string, a.P_DRY_RUN)
+
 	def raw(
 			self,
 			string : str

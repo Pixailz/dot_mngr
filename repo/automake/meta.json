@@ -4,5 +4,28 @@
     "prefix": "automake-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.gz",
-    "version": "1.16.5"
+    "version": "1.16.5",
+    "dependencies": {
+        "required": [
+            "bash",
+            "perl",
+            "autoconf",
+            "bash"
+        ],
+        "optional": [
+            "cscope",
+            "dejagnu",
+            "emacs",
+            "expect",
+            "gettext",
+            "help2man",
+            "lzip",
+            "ncompress",
+            "python",
+            "python-virtualenv",
+            "sharutils",
+            "vala",
+            "zip"
+        ]
+    }
 }

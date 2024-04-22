@@ -4,5 +4,6 @@
     "prefix": "gettext-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/gettext/gettext-0.22.5.tar.gz",
-    "version": "0.22.5"
+    "version": "0.22.5",
+    "dependencies": null
 }

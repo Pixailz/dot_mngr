@@ -4,5 +4,20 @@
     "prefix": "binutils-",
     "suffix": ".tar.gz",
     "link": "https://sourceware.org/pub/binutils/releases/binutils-2.42.tar.gz",
-    "version": "2.42"
+    "version": "2.42",
+    "dependencies": {
+        "required": [
+            "glibc",
+            "jansson",
+            "libelf",
+            "zlib",
+            "zstd"
+        ],
+        "optional": [
+            "debuginfod",
+            "git",
+            "bc",
+            "dejagnu"
+        ]
+    }
 }

@@ -4,5 +4,6 @@
     "prefix": "grep-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/grep/grep-3.11.tar.gz",
-    "version": "3.11"
+    "version": "3.11",
+    "dependencies": null
 }

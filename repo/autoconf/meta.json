@@ -4,5 +4,14 @@
     "prefix": "autoconf-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/autoconf/autoconf-2.72.tar.gz",
-    "version": "2.72"
+    "version": "2.72",
+    "dependencies": {
+        "required": [
+            "awk",
+            "diffutils",
+            "m4",
+            "perl",
+            "bash"
+        ]
+    }
 }

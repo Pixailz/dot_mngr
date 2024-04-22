@@ -4,5 +4,6 @@
     "prefix": "elfutils-",
     "suffix": ".tar.bz2",
     "link": "https://sourceware.org/elfutils/ftp/0.191/elfutils-0.191.tar.bz2",
-    "version": "0.191"
+    "version": "0.191",
+    "dependencies": null
 }

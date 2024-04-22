@@ -4,5 +4,6 @@
     "prefix": "groff-",
     "suffix": ".tar.gz",
     "link": "https://ftp.gnu.org/gnu/groff/groff-1.23.0.tar.gz",
-    "version": "1.23.0"
+    "version": "1.23.0",
+    "dependencies": null
 }

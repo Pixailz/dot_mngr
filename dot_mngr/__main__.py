@@ -1,7 +1,6 @@
 from dot_mngr import *
 
 def	main():
-	conf.load_packages()
 	# conf.update_repo()
 	# conf.info_package()
 
@@ -12,7 +11,8 @@ def	main():
 	# conf.packages["bash"].cmd["suite"]()
 	# conf.packages["bc"].cmd["suite"]()
 	# conf.packages["binutils"].cmd["suite"]()
-	conf.packages["less"].cmd["suite"]()
+	# conf.packages["bison"].cmd["suite"]()
+	# conf.packages["less"].cmd["suite"]()
 
 if __name__ == "__main__":
 	main()

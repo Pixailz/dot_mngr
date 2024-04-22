@@ -4,5 +4,6 @@
     "prefix": "iana-etc-",
     "suffix": ".tar.gz",
     "link": "https://github.com/Mic92/iana-etc/releases/download/20240412/iana-etc-20240412.tar.gz",
-    "version": "20240412"
+    "version": "20240412",
+    "dependencies": null
 }

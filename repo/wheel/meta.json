@@ -4,5 +4,6 @@
     "prefix": "wheel-",
     "suffix": ".tar.gz",
     "link": "https://github.com/pypa/wheel/archive/refs/tags/0.43.0.tar.gz",
-    "version": "0.43.0"
+    "version": "0.43.0",
+    "dependencies": null
 }

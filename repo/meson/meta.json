@@ -4,5 +4,6 @@
     "prefix": "meson-",
     "suffix": ".tar.gz",
     "link": "https://github.com/mesonbuild/meson/releases/download/1.4.0/meson-1.4.0.tar.gz",
-    "version": "1.4.0"
+    "version": "1.4.0",
+    "dependencies": null
 }

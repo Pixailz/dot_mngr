@@ -4,5 +4,6 @@
     "prefix": "man-pages-",
     "suffix": ".tar.gz",
     "link": "https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/man-pages-6.7.tar.gz",
-    "version": "6.7"
+    "version": "6.7",
+    "dependencies": null
 }

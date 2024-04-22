@@ -4,5 +4,6 @@
     "prefix": "findutils-",
     "suffix": ".tar.xz",
     "link": "https://ftp.gnu.org/gnu/findutils/findutils-4.9.0.tar.xz",
-    "version": "4.9.0"
+    "version": "4.9.0",
+    "dependencies": null
 }

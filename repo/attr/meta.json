@@ -4,5 +4,11 @@
     "prefix": "attr-",
     "suffix": ".tar.gz",
     "link": "https://download.savannah.gnu.org/releases/attr/attr-2.5.2.tar.gz",
-    "version": "2.5.2"
+    "version": "2.5.2",
+    "dependencies": {
+        "required": [
+            "glibc",
+            "gettext"
+        ]
+    }
 }

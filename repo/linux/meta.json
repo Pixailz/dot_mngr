@@ -3,6 +3,7 @@
     "type": "website",
     "prefix": "linux-",
     "suffix": ".tar.xz",
-    "link": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.6.tar.xz",
-    "version": "6.8.6"
+    "link": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.8.7.tar.xz",
+    "version": "6.8.7",
+    "dependencies": null
 }

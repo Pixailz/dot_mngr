@@ -4,5 +4,6 @@
     "prefix": "man-db-",
     "suffix": ".tar.xz",
     "link": "https://download.savannah.gnu.org/releases/man-db/man-db-2.12.1.tar.xz",
-    "version": "2.12.1"
+    "version": "2.12.1",
+    "dependencies": null
 }

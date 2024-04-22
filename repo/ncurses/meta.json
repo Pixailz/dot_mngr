@@ -4,5 +4,6 @@
     "prefix": "ncurses-",
     "suffix": ".tar.gz",
     "link": "https://github.com/mirror/ncurses/archive/refs/tags/v6.4.tar.gz",
-    "version": "6.4"
+    "version": "6.4",
+    "dependencies": null
 }

@@ -17,6 +17,7 @@ class Config():
 		if not meta:
 			meta = dict()
 		self.last_checked = meta.get("last_checked")
+		self.list_packages = meta.get("packages")
 
 	def load_packages(self):
 		self.packages = dict()
@@ -49,6 +50,7 @@ class Config():
 		with open(os.path.join(DIR_REPO, FILE_META), "w") as f:
 			json.dump({
 				"last_checked": self.last_checked,
+				"packages": self.list_packages
 			}, f, indent=4)
 
 	def update_repo_threaded(self):

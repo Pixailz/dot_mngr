@@ -42,6 +42,10 @@ class Ansi():
 		self.P_WARN = f"[{self.ORA}!{self.RST}]"
 		self.P_PASS = f"[{self.GRE}+{self.RST}]"
 		self.P_FAIL = f"[{self.RED}-{self.RST}]"
+		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RST}{self.RBOL}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}dry-run{self.RST}{self.RUND}]"
+		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RST}{self.RBOL}]"
+		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RST}{self.RBOL}]"
 
 		## TEST
 		self.SEP1 = f"{self.BOL}{self.CYA}{'=' * 80}{self.RST}{self.RBOL}"

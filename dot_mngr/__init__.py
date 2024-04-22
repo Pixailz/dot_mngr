@@ -25,6 +25,7 @@ WRITE_HTML		= False
 DO_CHECK		= False
 USE_LOCAL_HOME	= True
 DO_CHROOT		= False # TODO Implement chroot
+DRY_RUN			= False
 
 HOST_TRIPLET	= subprocess.run(
 	"gcc -dumpmachine",
@@ -153,11 +154,11 @@ PACKAGES	= [
 # ]
 
 # PACKAGES = [
-# 	# "bash",
-# 	# "less",
-# 	# "linux",
-# 	# "bc"
-# 	# "acl"
+# 	"bash",
+# 	"less",
+# 	"linux",
+# 	"bc"
+# 	"acl"
 # ]
 
 from	.utils.ansi				import ansi					as a
@@ -177,3 +178,5 @@ from 	.cli.main				import CliMain
 from 	.scrap					import scrap
 from	.package				import Package
 from 	.config					import conf
+
+conf.load_packages()

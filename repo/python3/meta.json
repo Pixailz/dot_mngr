@@ -4,5 +4,6 @@
     "prefix": "Python-",
     "suffix": ".tar.xz",
     "link": "https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tar.xz",
-    "version": "3.12.3"
+    "version": "3.12.3",
+    "dependencies": null
 }

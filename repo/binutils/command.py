@@ -30,4 +30,4 @@ def install(self):
 	)
 
 def uninstall(self):
-	self.cmd_run("sudo make uninstall")
+	self.cmd_run(f"sudo make uninstall tooldir={CNF_PREFIX}")

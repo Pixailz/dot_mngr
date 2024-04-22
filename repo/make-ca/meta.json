@@ -4,5 +4,6 @@
     "prefix": "make-ca-",
     "suffix": ".tar.xz",
     "link": "https://github.com/lfs-book/make-ca/releases/download/v1.13/make-ca-1.13.tar.xz",
-    "version": "1.13"
+    "version": "1.13",
+    "dependencies": null
 }

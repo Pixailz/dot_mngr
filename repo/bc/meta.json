@@ -4,5 +4,11 @@
     "prefix": "bc-",
     "suffix": ".tar.gz",
     "link": "https://github.com/gavinhoward/bc/releases/download/6.7.5/bc-6.7.5.tar.gz",
-    "version": "6.7.5"
+    "version": "6.7.5",
+    "dependencies": {
+        "required": [
+            "readline",
+            "ed"
+        ]
+    }
 }

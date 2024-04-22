@@ -4,5 +4,6 @@
     "prefix": "kmod-",
     "suffix": ".tar.gz",
     "link": "https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-32.tar.gz",
-    "version": "32"
+    "version": "32",
+    "dependencies": null
 }

@@ -15,12 +15,89 @@ def default_install(self):
 def default_uninstall(self):
 	p.warn(f"Uninstall command not found for {self.name}")
 
+def get_dependencies(pack):
+	from dot_mngr import conf
+
+	to_install = list()
+	package = conf.packages[pack]
+
+	if package.dependencies:
+		if package.dependencies.get("required"):
+			to_install += package.dependencies["required"]
+		# if package.dependencies.get("optional"):
+		#	to_install += package.dependencies["optional"]
+
+	return to_install
+
+def is_installed(pack):
+	if pack.files == None:
+		return False
+	for file in pack.files:
+		if file[0] == "/":
+			file = file[1:]
+		print(os.path.join(CNF_PREFIX, file))
+
+		if not os.path.exists(os.path.join(CNF_PREFIX, file)):
+			return False
+	return True
+
+def install_depencencies(self):
+	from dot_mngr import conf
+
+	to_install = list()
+
+	def get_all_dependencies(target):
+		to_install = get_dependencies(target.name)
+		prev_len = len(to_install)
+
+		while True:
+			for pack in to_install:
+				to_install += get_dependencies(pack)
+
+			tmp = set(to_install)
+			to_install = list(tmp)
+
+			cur_len = len(to_install)
+			print(f"{cur_len = }")
+			print(f"{prev_len = }")
+
+			if prev_len == cur_len:
+				break
+			else:
+				prev_len = cur_len
+		return to_install
+
+	def get_not_installed_dependencies(to_install):
+		new_to_install = list()
+		for pack in to_install:
+			if not is_installed(conf.packages[pack]):
+				new_to_install.append(pack)
+
+		return to_install
+
+	to_install = get_all_dependencies(self)
+	to_install = get_not_installed_dependencies(to_install)
+
+	pprint(to_install)
+	sys.exit(130)
+
+	# for i in to_install:
+	# 	if not self.conf.packages.get(i):
+	# 		p.warn(f"Dependency {i} not found")
+	# 		continue
+
+	# 	self.conf.packages[i].cmd["suite"]()
+
 def default_suite(self):
+	install_depencencies(self)
+
 	self.cmd["configure"]()
 	self.cmd["compile"]()
 	if DO_CHECK:
 		self.cmd["check"]()
 	self.cmd["install"]()
+
+	os.chdir(self.oldpwd)
 	shutil.rmtree(self.tar_folder)
 
 def a_cmd(self, func, title = None):
@@ -42,9 +119,17 @@ class Package():
 		self.prepared = False
 		self.log_out = os.path.join(DIR_LOG, f"{self.name}.out.log")
 		self.log_err = os.path.join(DIR_LOG, f"{self.name}.err.log")
+		self.f_log_out = None
+		self.f_log_err = None
 
 		self.load_meta()
 		self.load_command()
+
+	def __del__(self):
+		if self.f_log_out and not self.f_log_out.closed:
+			self.f_log_out.close()
+		if self.f_log_err and not self.f_log_err.closed:
+			self.f_log_err.close()
 
 	def load_meta(self):
 		meta = json_load(self.f_meta)
@@ -56,18 +141,11 @@ class Package():
 		self.suffix = meta.get("suffix")
 		self.link = meta.get("link")
 		self.version = meta.get("version")
+		self.files = meta.get("files")
+		self.dependencies = meta.get("dependencies")
 		self.file_name = f"{self.name}-{self.version}{self.suffix}"
 		self.file_path = os.path.join(DIR_CACHE, self.file_name)
 		self.repo_status = None
-
-	# def load_command(self):
-	# 	if os.path.exists(self.f_command):
-	# 		spec = importlib.util.spec_from_file_location("command", self.f_command)
-	# 		tmp = importlib.util.module_from_spec(spec)
-	# 		spec.loader.exec_module(tmp)
-	# 		self.command = tmp.Command(self)
-	# 	else:
-	# 		self.command = DefaultCommand(self)
 
 	def load_command(self):
 		self.cmd = dict()
@@ -115,13 +193,18 @@ class Package():
 		if tar.is_tarfile(self.file_path):
 			self.prepare_tarball()
 		self.conf = conf
+
 		self.f_log_out = open(self.log_out, "ab")
 		self.f_log_err = open(self.log_err, "ab")
-		if os.getcwd() != self.tar_folder:
+
+		cwd = os.getcwd()
+		if cwd != self.tar_folder:
+			self.oldpwd = cwd
 			os.chdir(self.tar_folder)
+
 		self.prepared = True
 
-	def prepare_tarball(self):
+	def prepare_tarball_real(self):
 		ftar = tar.open(self.file_path, "r")
 		ftar_names = ftar.getnames()
 		if len(ftar_names) > 0:
@@ -134,7 +217,17 @@ class Package():
 			if os.path.exists(self.tar_folder):
 				shutil.rmtree(self.tar_folder)
 				p.warn("Removing old tar folder")
+		p.info(f"Extracting {self.name}")
 		ftar.extractall(DIR_CACHE)
+		p.success(f"Extracted {self.name}")
+
+	def prepare_tarball(self):
+		if DRY_RUN:
+			self.tar_folder = os.path.join(DIR_CACHE, self.name)
+			mkdir(self.tar_folder)
+			p.dr(f"Creating {self.tar_folder}")
+		else:
+			self.prepare_tarball_real()
 
 	@staticmethod
 	def info_col(
@@ -152,7 +245,7 @@ class Package():
 
 	@staticmethod
 	def hdr_info():
-		p.info(Package.info_col("Name","Status", "Version", "Link") + "\n")
+		p.title(Package.info_col("Name","Status", "Version", "Link") + "\n")
 
 	def info(self):
 		pfunc = p.info
@@ -166,6 +259,18 @@ class Package():
 			status = "Up-to-date"
 
 		pfunc(Package.info_col(self.name, status, self.version, self.link))
+
+		if self.dependencies:
+			p.title(f"  - Dependencies:")
+			if self.dependencies.get("required"):
+				p.info(f"    - Required:")
+				for i in self.dependencies["required"]:
+					p.info(f"      - {i}")
+			if self.dependencies.get("optional"):
+				p.info(f"    - Optional:")
+				for i in self.dependencies["optional"]:
+					p.info(f"      - {i}")
+			print()
 
 	def save_update(self):
 		if self.new_link == None:
@@ -188,6 +293,7 @@ class Package():
 				"suffix": self.suffix,
 				"link": self.link,
 				"version": self.version,
+				"dependencies": self.dependencies
 			}, f, indent=4)
 
 	def update(self):
@@ -204,7 +310,7 @@ class Package():
 		p.success(f"{self.file_name} already exists")
 		return True
 
-	def cmd_run(self, cmd : str):
+	def cmd_run_real(self, cmd):
 		def p_out(stream):
 			out = stream.readline()
 			if out:
@@ -247,6 +353,12 @@ class Package():
 			p.fail(f"Command failed:\n[{cmd}]({retv})")
 
 		return retv
+
+	def cmd_run(self, cmd : str):
+		if DRY_RUN:
+			p.dr(cmd)
+		else:
+			return self.cmd_run_real(cmd)
 
 	def apply_patch(self, opt, path):
 		self.cmd_run(f"patch {opt} -i {path}")

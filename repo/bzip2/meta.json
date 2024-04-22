@@ -4,5 +4,20 @@
     "prefix": "bzip2-",
     "suffix": ".tar.gz",
     "link": "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz",
-    "version": "1.0.8"
+    "version": "1.0.8",
+    "dependencies": {
+        "required": [
+            "glibc",
+            "jansson",
+            "libelf",
+            "zlib",
+            "zstd"
+        ],
+        "optional": [
+            "debuginfod",
+            "git",
+            "bc",
+            "dejagnu"
+        ]
+    }
 }

@@ -4,5 +4,6 @@
     "prefix": "kbd-",
     "suffix": ".tar.gz",
     "link": "https://mirrors.edge.kernel.org/pub/linux/utils/kbd/kbd-2.6.4.tar.gz",
-    "version": "2.6.4"
+    "version": "2.6.4",
+    "dependencies": null
 }

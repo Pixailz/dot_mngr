@@ -4,5 +4,6 @@
     "prefix": "systemd-",
     "suffix": ".tar.gz",
     "link": "https://github.com/systemd/systemd/archive/refs/tags/v255.tar.gz",
-    "version": "255"
+    "version": "255",
+    "dependencies": null
 }
