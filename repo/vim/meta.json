@@ -1,9 +1,10 @@
 {
-    "value": "vim/vim",
-    "type": "github_tag",
-    "prefix": "vim-",
-    "suffix": ".tar.gz",
-    "link": "https://github.com/vim/vim/archive/refs/tags/v9.1.0363.tar.gz",
-    "version": "9.1.0363",
-    "dependencies": null
+	"value": "vim/vim",
+	"type": "github_tag",
+	"prefix": "vim-",
+	"suffix": ".tar.gz",
+	"link": "https://github.com/vim/vim/archive/refs/tags/v9.1.0368.tar.gz",
+	"version": "9.1.0368",
+	"files": null,
+	"dependencies": null
 }

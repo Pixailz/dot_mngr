@@ -1,0 +1,10 @@
+{
+	"value": "https://f.org/f-1.1.1.tar.gz",
+	"type": "no_scrap",
+	"prefix": "f-",
+	"suffix": ".tar.gz",
+	"link": "https://f.org/f-1.1.1.tar.gz",
+	"version": "1.1.1",
+	"files": null,
+	"dependencies": null
+}

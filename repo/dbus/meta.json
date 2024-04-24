@@ -1,9 +1,10 @@
 {
-    "value": "https://dbus.freedesktop.org/releases/dbus",
-    "type": "apache",
-    "prefix": "dbus-",
-    "suffix": ".tar.xz",
-    "link": "https://dbus.freedesktop.org/releases/dbus/dbus-1.14.10.tar.xz",
-    "version": "1.14.10",
-    "dependencies": null
+	"value": "https://dbus.freedesktop.org/releases/dbus",
+	"type": "apache",
+	"prefix": "dbus-",
+	"suffix": ".tar.xz",
+	"link": "https://dbus.freedesktop.org/releases/dbus/dbus-1.14.10.tar.xz",
+	"version": "1.14.10",
+	"files": null,
+	"dependencies": null
 }

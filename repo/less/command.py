@@ -3,10 +3,11 @@
 from dot_mngr import *
 
 def configure(self):
+	self.cmd_run("echo | gcc -xc -E -v -")
 	self.cmd_run(
-		f"./configure --prefix={CNF_PREFIX}"
+		f"env CPPFLAGS=-I{CNF_PREFIX}/include ./configure --prefix={CNF_PREFIX}"
 		f" --docdir={CNF_PREFIX}/share/doc/{self.name}-{self.version}"
-		 " --sysconfdir=/etc"
+		f" --sysconfdir={CNF_PREFIX}/etc"
 	)
 
 def compile(self):

@@ -12,18 +12,27 @@ import datetime
 import importlib
 import selectors
 import subprocess
+import configparser
 
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import wait
+from concurrent.futures import ThreadPoolExecutor, wait
 from importlib import metadata as md
+from timeit import default_timer as timer
 
-from pprint import pprint
+BEGIN_TS = timer()
+ELAPSED_LVL = 0
+
+def p_elapsed(msg=""):
+	global ELAPSED_LVL
+	ELAPSED_LVL += 1
+
+	elapsed_lvl = f"\x1b[2m{ELAPSED_LVL:02d}\x1b[22m"
+	elapsed_time = f"\x1b[4m{timer() - BEGIN_TS:.3f}\x1b[24m"
+	print(f"[{elapsed_lvl}][{elapsed_time}] {msg}")
 
 NO_ANSI			= False
-LOG_FILE		= None
 WRITE_HTML		= False
 DO_CHECK		= False
-USE_LOCAL_HOME	= True
+USE_LOCAL_HOME	= False
 DO_CHROOT		= False # TODO Implement chroot
 DRY_RUN			= False
 
@@ -33,12 +42,13 @@ HOST_TRIPLET	= subprocess.run(
 	capture_output=True
 ).stdout.decode("utf-8").strip("\n")
 
+NB_PROC			= os.cpu_count()
+
 if USE_LOCAL_HOME:
 	CNF_PREFIX	= os.path.expanduser("~/.local")
 else:
 	CNF_PREFIX	= "/usr"
-
-METADATA		= md.metadata("dot_mngr")
+METADATA		= dict(md.metadata("dot_mngr"))
 
 CWD				= os.getcwd()
 DIR_BASE		= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -55,16 +65,15 @@ TERM_COLS, TERM_ROWS = os.get_terminal_size()
 PROMPT_RIGHT_SIZE = 60
 PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
 
-_ENV_FILE_	= os.path.join(DIR_BASE, ".env")
-# Load .env file
-if os.path.exists(_ENV_FILE_):
-	with open(_ENV_FILE_, "r") as f:
-		try:
-			ENV = json.load(f)
-		except json.JSONDecodeError:
-			ENV = None
-else:
-	ENV = None
+# LOADING ENV
+with open(os.path.join(DIR_BASE, ".env"), 'r') as f:
+	config_string = '[s]\n' + f.read()
+
+env = configparser.ConfigParser()
+env.read_string(config_string)
+
+from pprint import pprint
+ENV = env["s"]
 
 PACKAGES	= [
 	"acl", "attr", "autoconf", "automake",
@@ -161,6 +170,11 @@ PACKAGES	= [
 # 	# "acl"
 # ]
 
+# PACKAGES = [
+# 	"a", "b", "c", "d", "e", "f", "g"
+# ]
+
+# UTILS
 from	.utils.ansi				import ansi					as a
 from 	.utils.regex			import regex				as r
 from 	.utils.progress_bar		import ProgressBar
@@ -169,14 +183,27 @@ from 	.utils					import unicode				as u
 
 from	.utils._print			import _print				as p
 
-from 	.utils._os				import mkdir
-from 	.utils._os				import take
-from 	.utils._json			import json_load
+from 	.utils._os				import Os
 
-from 	.cli.main				import CliMain
+from 	.utils._json			import Json
 
+# SCRAP
 from 	.scrap					import scrap
-from	.package				import Package
-from 	.config					import conf
 
-conf.load_packages()
+# COMMAND
+from 	.command				import default_configure
+from 	.command				import default_compile
+from 	.command				import default_check
+from 	.command				import default_install
+from 	.command				import default_uninstall
+from 	.command				import default_suite
+from 	.command				import a_cmd
+
+# PACKAGE
+from	.package				import Package
+
+# CLI PARSING
+from 	.parsing				import Parsing
+
+# CONFIG
+from 	.config					import conf

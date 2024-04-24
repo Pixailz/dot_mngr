@@ -116,7 +116,7 @@ class CustomTestRunner(object):
             self.stream.write(a.RES_FAIL)
             failed, errored = len(result.failures), len(result.errors)
             if failed:
-                infos.append(f"failures={self.RED}{self.BOL}{failed}{self.RST}{self.RBOL}")
+                infos.append(f"failures={self.RED}{self.BOL}{failed}{self.RSTBOL}")
             if errored:
                 infos.append(f"errors={self.ORA}{errored}{self.RST}")
         elif run == 0 and not skipped:

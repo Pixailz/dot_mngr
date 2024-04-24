@@ -1,9 +1,15 @@
 {
-    "value": "https://www.greenwoodsoftware.com/less/download.html",
-    "type": "website",
-    "prefix": "less-",
-    "suffix": ".tar.gz",
-    "link": "https://www.greenwoodsoftware.com/less/less-643.tar.gz",
-    "version": "643",
-    "dependencies": null
+	"value": "https://www.greenwoodsoftware.com/less/download.html",
+	"type": "website",
+	"prefix": "less-",
+	"suffix": ".tar.gz",
+	"link": "https://www.greenwoodsoftware.com/less/less-643.tar.gz",
+	"version": "643",
+	"files": null,
+	"dependencies": {
+		"required": [
+			"glibc",
+			"ncurses"
+		]
+	}
 }

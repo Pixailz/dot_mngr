@@ -1,0 +1,10 @@
+{
+	"value": "https://d.org/d-1.1.1.tar.gz",
+	"type": "no_scrap",
+	"prefix": "d-",
+	"suffix": ".tar.gz",
+	"link": "https://d.org/d-1.1.1.tar.gz",
+	"version": "1.1.1",
+	"files": null,
+	"dependencies": null
+}

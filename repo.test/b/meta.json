@@ -1,0 +1,15 @@
+{
+	"value": "https://b.org/b-1.1.1.tar.gz",
+	"type": "no_scrap",
+	"prefix": "b-",
+	"suffix": ".tar.gz",
+	"link": "https://b.org/b-1.1.1.tar.gz",
+	"version": "1.1.1",
+	"files": null,
+	"dependencies": {
+		"required": [
+			"d",
+			"e"
+		]
+	}
+}

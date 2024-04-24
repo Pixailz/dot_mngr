@@ -1,12 +1,13 @@
 {
-    "value": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
-    "type": "no_scrap",
-    "prefix": "coreutils-",
-    "suffix": ".tar.gz",
-    "link": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
-    "version": "9.4",
-    "dependencies": {
-        "required": [
+	"value": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
+	"type": "no_scrap",
+	"prefix": "coreutils-",
+	"suffix": ".tar.gz",
+	"link": "https://ftp.gnu.org/gnu/coreutils/coreutils-9.4.tar.gz",
+	"version": "9.4",
+	"files": null,
+	"dependencies": {
+		"required": [
 			"acl",
 			"attr",
 			"autoconf",
@@ -15,7 +16,6 @@
 			"gmp",
 			"libcap",
 			"openssl"
-        ]
-    }
+		]
+	}
 }
-

@@ -32,19 +32,29 @@ class Ansi():
 		self.RUND	= f"{self.CSI}24m"
 		self.RBLI	= f"{self.CSI}25m"
 
+		self.RSTBOL	= f"{self.CSI}0;22m"
+		self.RSTITA	= f"{self.CSI}0;23m"
+		self.RSTUND	= f"{self.CSI}0;24m"
+		self.RSTBLI	= f"{self.CSI}0;25m"
+
 		if no_ansi:
 			self.remove_ansi()
 
 		# COMPOSITE
+
+		## PRINT FUNCTION HEADER
 		self.SEP	= f" "
-		self.P_INFO = f"[{self.BLU}*{self.RST}]"
-		self.P_WARN = f"[{self.ORA}!{self.RST}]"
-		self.P_PASS = f"[{self.GRE}+{self.RST}]"
-		self.P_FAIL = f"[{self.RED}-{self.RST}]"
-		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RST}{self.RBOL}]"
-		self.P_DRY_RUN = f"[{self.CYA}{self.UND}dry-run{self.RST}{self.RUND}]"
-		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RST}{self.RBOL}]"
-		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RST}{self.RBOL}]"
+		self.P_INFO = f"[{self.BOL}{self.BLU}*{self.RSTBOL}]"
+		self.P_WARN = f"[{self.BOL}{self.ORA}!{self.RSTBOL}]"
+		self.P_PASS = f"[{self.BOL}{self.GRE}+{self.RSTBOL}]"
+		self.P_FAIL = f"[{self.BOL}{self.RED}-{self.RSTBOL}]"
+		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}D{self.RSTUND}]"
+		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
+		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
+
+		## HELP META
+		self.HM_DIR = f"{self.BOL}DIR{self.RBOL}"
 
 	def	remove_ansi(
 			self

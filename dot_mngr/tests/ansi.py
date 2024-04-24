@@ -42,19 +42,19 @@ class Ansi():
 		self.P_WARN = f"[{self.ORA}!{self.RST}]"
 		self.P_PASS = f"[{self.GRE}+{self.RST}]"
 		self.P_FAIL = f"[{self.RED}-{self.RST}]"
-		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RST}{self.RBOL}]"
-		self.P_DRY_RUN = f"[{self.CYA}{self.UND}dry-run{self.RST}{self.RUND}]"
-		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RST}{self.RBOL}]"
-		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RST}{self.RBOL}]"
+		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}dry-run{self.RSTUND}]"
+		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
+		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
 
 		## TEST
-		self.SEP1 = f"{self.BOL}{self.CYA}{'=' * 80}{self.RST}{self.RBOL}"
-		self.SEP2 = f"{self.BOL}{self.YEL}{'-' * 80}{self.RST}{self.RBOL}"
+		self.SEP1 = f"{self.BOL}{self.CYA}{'=' * 80}{self.RSTBOL}"
+		self.SEP2 = f"{self.BOL}{self.YEL}{'-' * 80}{self.RSTBOL}"
 
 		self.WAIT = f" {self.CYA}...{self.RST} "
 
-		self.FAIL_L = f"{self.BOL}{self.RED}Fail{self.RST}{self.RBOL}"
-		self.FAIL_S = f"{self.BOL}{self.RED}F{self.RST}{self.RBOL}"
+		self.FAIL_L = f"{self.BOL}{self.RED}Fail{self.RSTBOL}"
+		self.FAIL_S = f"{self.BOL}{self.RED}F{self.RSTBOL}"
 
 		self.ERRO_L = f"{self.ORA}Error{self.RST}"
 		self.ERRO_S = f"{self.ORA}E{self.RST}"
@@ -71,16 +71,16 @@ class Ansi():
 		self.UNEX_PASS_L = f"{self.CYA}Unexpected Success{self.RST}"
 		self.UNEX_PASS_S = f"{self.CYA}u{self.RST}"
 
-		self.RES_FAIL = f"{self.BOL}{self.RED}FAILED{self.RST}{self.RBOL}"
-		self.RES_PASS = f"{self.BOL}{self.GRE}OK{self.RST}{self.RBOL}"
-		self.RES_NO_TEST = f"{self.BOL}{self.YEL}NO TESTS RAN{self.RST}{self.RBOL}"
+		self.RES_FAIL = f"{self.BOL}{self.RED}FAILED{self.RSTBOL}"
+		self.RES_PASS = f"{self.BOL}{self.GRE}OK{self.RSTBOL}"
+		self.RES_NO_TEST = f"{self.BOL}{self.YEL}NO TESTS RAN{self.RSTBOL}"
 
 		# FORMAT
 		self.FMTB_NB_TEST = f"{self.BOL}{self.GRE}"
-		self.FMTE_NB_TEST = f"{self.RST}{self.RBOL}"
+		self.FMTE_NB_TEST = f"{self.RSTBOL}"
 
 		self.FMTB_TIME_TAKEN = f"{self.BOL}{self.ORA}"
-		self.FMTE_TIME_TAKEN = f"{self.RST}{self.RBOL}"
+		self.FMTE_TIME_TAKEN = f"{self.RSTBOL}"
 
 		self.FMTB_METHOD = f"{self.YEL}"
 		self.FMTE_METHOD = f"{self.RST}"

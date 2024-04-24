@@ -48,10 +48,12 @@ class	Print():
 
 	def	fail(
 			self,
-			string : str
+			string : str,
+			exiting : bool = True
 		):
 		self.print(string, a.P_FAIL)
-		sys.exit(1)
+		if exiting:
+			sys.exit(1)
 
 	def	title(
 			self,
@@ -71,14 +73,6 @@ class	Print():
 		):
 		self.print(string, end="")
 
-	@staticmethod
-	def col(cols):
-		string = str()
-		for c in cols:
-			tmp = c[0] or ""
-			string += tmp.ljust(c[1] - 1) + " "
-		return string
-
 	def cmdo(
 			self,
 			string : str
@@ -90,5 +84,14 @@ class	Print():
 			string : str
 		):
 		self.print(string, a.P_CMD_ERR)
+
+	@staticmethod
+	def col(cols):
+		string = str()
+		for c in cols:
+			tmp = c[0] or ""
+			string += tmp.ljust(c[1] - 1) + " "
+		return string
+
 
 _print = Print()

@@ -1,0 +1,10 @@
+{
+	"value": "https://e.org/e-1.1.1.tar.gz",
+	"type": "no_scrap",
+	"prefix": "e-",
+	"suffix": ".tar.gz",
+	"link": "https://e.org/e-1.1.1.tar.gz",
+	"version": "1.1.1",
+	"files": null,
+	"dependencies": null
+}
