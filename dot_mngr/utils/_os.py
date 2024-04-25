@@ -1,7 +1,7 @@
 from dot_mngr import os
 from dot_mngr import shutil
 
-from dot_mngr import NB_PROC, CNF_PREFIX
+from dot_mngr import NB_PROC, PREFIX
 
 class Os():
 
@@ -22,7 +22,7 @@ class Os():
 	@staticmethod
 	def get_env():
 		env = os.environ
-		env["MAKEFLAGS"] = f"-j{NB_PROC} -I{CNF_PREFIX}/include -l{CNF_PREFIX}/lib"
-		env["INCLUDE_PATH"] = f"{CNF_PREFIX}/include"
-		env["LIBRARY_PATH"] = f"{CNF_PREFIX}/lib"
+		env["MAKEFLAGS"] = f"-j{NB_PROC} -I{PREFIX}/include -l{PREFIX}/lib"
+		env["INCLUDE_PATH"] = f"{PREFIX}/include"
+		env["LIBRARY_PATH"] = f"{PREFIX}/lib"
 		return env

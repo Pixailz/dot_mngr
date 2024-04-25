@@ -3,7 +3,7 @@
 from dot_mngr import *
 
 def configure(self):
-	self.cmd_run(f"./configure --prefix={CNF_PREFIX}")
+	self.cmd_run(f"./configure --prefix={PREFIX}")
 
 def compile(self):
 	self.cmd_run("make")
@@ -14,7 +14,7 @@ def check(self):
 def install(self):
 	self.cmd_run(
 		 "sudo make install && "
-		f"sudo make TEXMF={CNF_PREFIX}/share/texmf install-tex"
+		f"sudo make TEXMF={PREFIX}/share/texmf install-tex"
 	)
 
 def uninstall(self):

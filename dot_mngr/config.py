@@ -6,7 +6,8 @@ from dot_mngr import p
 from dot_mngr import Json, Os, Package, Parsing
 from dot_mngr import p_elapsed
 
-from dot_mngr import DIR_REPO, DIR_CACHE, DIR_LOG, FILE_META, PACKAGES, CNF_PREFIX
+from dot_mngr import DIR_REPO, DIR_CACHE, DIR_LOG, FILE_META, PACKAGES, PREFIX
+from dot_mngr import NB_PROC
 
 def uniq_list(lst):
 	new_list = list()
@@ -34,9 +35,9 @@ def is_installed(pack):
 	for file in pack.files:
 		if file[0] == "/":
 			file = file[1:]
-		# print(os.path.join(CNF_PREFIX, file))
+		# print(os.path.join(PREFIX, file))
 
-		if not os.path.exists(os.path.join(CNF_PREFIX, file)):
+		if not os.path.exists(os.path.join(PREFIX, file)):
 			return False
 	return True
 
@@ -87,7 +88,7 @@ class Config():
 		Os.mkdir(DIR_LOG, True)
 
 		# for dir in ["bin", "etc", "lib", "lib64", "share", "var"]:
-		# 	Os.mkdir(os.path.join(CNF_PREFIX, dir))
+		# 	Os.mkdir(os.path.join(PREFIX, dir))
 
 	def load_meta(self):
 		meta = Json.load(os.path.join(DIR_REPO, FILE_META))
@@ -112,7 +113,7 @@ class Config():
 		p.info("Updating packages")
 		Package.hdr_info()
 
-		if self.parsing.args.no_thread:
+		if self.parsing.args.glob_no_thread:
 			self.update_repo_no_thread()
 		else:
 			self.update_repo_thread()
@@ -124,7 +125,7 @@ class Config():
 		}, os.path.join(DIR_REPO, FILE_META))
 
 	def update_repo_thread(self):
-		pool = ThreadPoolExecutor()
+		pool = ThreadPoolExecutor(NB_PROC)
 		p.info(f"Pool worker: {pool._max_workers}")
 		for package in self.packages.values():
 			pool.submit(package.update)
@@ -137,9 +138,12 @@ class Config():
 
 	# INSTALL
 	def install_package(self):
-		to_install = list()
+		to_install = getattr(self.parsing.args, "inst_package", None)
 
-		for pack in self.parsing.args.package:
+		if not to_install:
+			p.fail("No package to install")
+
+		for pack in self.parsing.args.inst_package:
 			if pack not in self.packages:
 				p.fail(f"Package {pack} not found")
 			to_install.append(pack)
@@ -152,8 +156,8 @@ class Config():
 			dependencies_get_not_installed(to_install + tmp_to_install)
 		)
 
-		# # Now that we have the list of packages and dependencies, in this order
-		# # we can install them, in reverse so dependencies are installed first
+		# Now that we have the list of packages and dependencies, in this order
+		# we can install them, in reverse so dependencies are installed first
 		for pack in sorted(to_install, reverse=True):
 			self.packages[pack].cmd["suite"]()
 

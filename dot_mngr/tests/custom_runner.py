@@ -116,21 +116,21 @@ class CustomTestRunner(object):
             self.stream.write(a.RES_FAIL)
             failed, errored = len(result.failures), len(result.errors)
             if failed:
-                infos.append(f"failures={self.RED}{self.BOL}{failed}{self.RSTBOL}")
+                infos.append(f"failures={a.RED}{a.BOL}{failed}{a.RSTBOL}")
             if errored:
-                infos.append(f"errors={self.ORA}{errored}{self.RST}")
+                infos.append(f"errors={a.ORA}{errored}{a.RST}")
         elif run == 0 and not skipped:
             self.stream.write(a.RES_NO_TEST)
         else:
             self.stream.write(a.RES_PASS)
         if skipped:
-            infos.append(f"skipped={self.PUR}{skipped}{self.RST}")
+            infos.append(f"skipped={a.PUR}{skipped}{a.RST}")
         if expectedFails:
-            infos.append(f"expected failures={self.BLU}{expectedFails}{self.RST}")
+            infos.append(f"expected failures={a.BLU}{expectedFails}{a.RST}")
         if unexpectedSuccesses:
-            infos.append(f"unexpected successes={self.CYA}{unexpectedSuccesses}{self.RST}")
+            infos.append(f"unexpected successes={a.CYA}{unexpectedSuccesses}{a.RST}")
         if infos:
-            self.stream.writeln(" x(%s)" % (", ".join(infos),))
+            self.stream.writeln(" (%s)" % (", ".join(infos),))
         else:
             self.stream.write("\n")
         self.stream.flush()

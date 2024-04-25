@@ -1,7 +1,17 @@
 from dot_mngr import *
+from pprint import pprint
 
 def	main():
 	conf.load_packages()
+
+	pprint(conf.parsing.args)
+
+	print(f"{PREFIX     = }")
+	print(f"{DRY_RUN    = }")
+	print(f"{WRITE_HTML = }")
+	print(f"{DO_CHECK   = }")
+	print(f"{NB_PROC    = }")
+
 	match conf.parsing.args.command:
 		case "update":
 			conf.update_repo()

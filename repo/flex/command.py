@@ -4,8 +4,8 @@ from dot_mngr import *
 
 def configure(self):
 	self.cmd_run(
-		f"./configure --prefix={CNF_PREFIX}"
-		f" --docdir={CNF_PREFIX}/share/doc/{self.name}-{self.version}"
+		f"./configure --prefix={PREFIX}"
+		f" --docdir={PREFIX}/share/doc/{self.name}-{self.version}"
 		" --disable-static"
 	)
 
@@ -18,8 +18,8 @@ def check(self):
 def install(self):
 	self.cmd_run(
 		 "sudo make install && "
-		f"sudo ln -sfv flex {CNF_PREFIX}/bin/lex && "
-		f"sudo ln -sfv flex.1 {CNF_PREFIX}/share/man/man1/lex.1"
+		f"sudo ln -sfv flex {PREFIX}/bin/lex && "
+		f"sudo ln -sfv flex.1 {PREFIX}/share/man/man1/lex.1"
 	)
 
 def uninstall(self):

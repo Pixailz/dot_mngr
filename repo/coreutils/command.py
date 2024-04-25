@@ -10,7 +10,7 @@ def configure(self):
 		 "sed -e '/n_out += n_hold/,+4 s|.*bufsize.*|//&|' -i src/split.c && "
 		 "autoreconf -fiv && "
 		 "FORCE_UNSAFE_CONFIGURE=1 ./configure"
-		f" --prefix={CNF_PREFIX}"
+		f" --prefix={PREFIX}"
 		f" --enable-no-install-program=kill,uptime"
 	)
 

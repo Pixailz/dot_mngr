@@ -21,7 +21,8 @@ class Regex():
 			self.re_filter_version + r'.*?)/".*'
 		)
 		self.tar_dir = re.compile(r'(.*?)/.*?')
-
+		self.ransi = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+		# self.ransi = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 	def href(self, pack, html):
 		try:
 			return re.findall(

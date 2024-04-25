@@ -4,15 +4,15 @@ from dot_mngr import *
 
 def configure(self):
 	self.cmd_run(
-		f"./configure --prefix={CNF_PREFIX}"
-		f" --mandir={CNF_PREFIX}/share/man"
+		f"./configure --prefix={PREFIX}"
+		f" --mandir={PREFIX}/share/man"
 		 " --with-shared"
 		 " --without-debug"
 		 " --without-normal"
 		 " --with-cxx-shared"
 		 " --enable-pc-files"
 		 " --enable-widec"
-		f" --with-pkg-config-libdir={CNF_PREFIX}/lib/pkgconfig"
+		f" --with-pkg-config-libdir={PREFIX}/lib/pkgconfig"
 	)
 
 def compile(self):
@@ -25,7 +25,7 @@ def install(self):
 	self.cmd_run(
 		 "sudo make install && "
 		 "make distclean && "
-		f"./configure --prefix={CNF_PREFIX}"
+		f"./configure --prefix={PREFIX}"
 		 " --with-shared"
 		 " --without-normal"
 		 " --without-debug"

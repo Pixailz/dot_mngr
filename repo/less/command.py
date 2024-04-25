@@ -5,9 +5,9 @@ from dot_mngr import *
 def configure(self):
 	self.cmd_run("echo | gcc -xc -E -v -")
 	self.cmd_run(
-		f"env CPPFLAGS=-I{CNF_PREFIX}/include ./configure --prefix={CNF_PREFIX}"
-		f" --docdir={CNF_PREFIX}/share/doc/{self.name}-{self.version}"
-		f" --sysconfdir={CNF_PREFIX}/etc"
+		f"env CPPFLAGS=-I{PREFIX}/include ./configure --prefix={PREFIX}"
+		f" --docdir={PREFIX}/share/doc/{self.name}-{self.version}"
+		f" --sysconfdir={PREFIX}/etc"
 	)
 
 def compile(self):

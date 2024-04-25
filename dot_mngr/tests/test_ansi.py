@@ -6,9 +6,10 @@ from dot_mngr.utils.ansi import Ansi
 
 class TestAnsi(unittest.TestCase):
 	def setUp(self):
-		self.a = Ansi(False)
+		self.a = Ansi()
 		self.t_a = AnsiTest(False)
-		self.na = Ansi(True)
+		self.na = Ansi()
+		self.na.remove_ansi()
 		self.t_na = AnsiTest(True)
 
 	def wrapper_ansi(self, var, no_ansi=False):

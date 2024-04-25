@@ -1,10 +1,7 @@
-from dot_mngr import *
+from dot_mngr import r
 
 class Ansi():
-	def	__init__(
-			self,
-			no_ansi : bool = NO_ANSI
-		) -> None:
+	def	__init__(self) -> None:
 
 		# ESCAPE SEQUENCE
 		self.ESC = "\x1b"
@@ -37,9 +34,6 @@ class Ansi():
 		self.RSTUND	= f"{self.CSI}0;24m"
 		self.RSTBLI	= f"{self.CSI}0;25m"
 
-		if no_ansi:
-			self.remove_ansi()
-
 		# COMPOSITE
 
 		## PRINT FUNCTION HEADER
@@ -49,17 +43,19 @@ class Ansi():
 		self.P_PASS = f"[{self.BOL}{self.GRE}+{self.RSTBOL}]"
 		self.P_FAIL = f"[{self.BOL}{self.RED}-{self.RSTBOL}]"
 		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
-		self.P_DRY_RUN = f"[{self.CYA}{self.UND}D{self.RSTUND}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}DEBUG{self.RSTUND}]"
 		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
 		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
 
 		## HELP META
-		self.HM_DIR = f"{self.BOL}DIR{self.RBOL}"
+		self.HM_PATH = f"{self.RED}PATH{self.RST}"
+		self.HM_INT = f"{self.RED}INT{self.RST}"
 
-	def	remove_ansi(
-			self
-		) -> None:
+	def	remove_ansi(self) -> None:
 		for key in self.__dict__.keys():
-			self.__dict__[key] = ""
+			if key in ["ESC", "CSI"]:
+				self.__dict__[key] = ""
+			else:
+				self.__dict__[key] = r.ransi.sub("", self.__dict__[key])
 
 ansi = Ansi()

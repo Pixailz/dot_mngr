@@ -29,12 +29,18 @@ def p_elapsed(msg=""):
 	elapsed_time = f"\x1b[4m{timer() - BEGIN_TS:.3f}\x1b[24m"
 	print(f"[{elapsed_lvl}][{elapsed_time}] {msg}")
 
-NO_ANSI			= False
-WRITE_HTML		= False
-DO_CHECK		= False
-USE_LOCAL_HOME	= False
-DO_CHROOT		= False # TODO Implement chroot
+# PARSED ARGS
+## GLOBAL
 DRY_RUN			= False
+PREFIX			= "/usr"
+NB_PROC			= os.cpu_count()
+
+# UPDATE
+WRITE_HTML		= False
+
+# INSTALL
+DO_CHECK		= True
+DO_CHROOT		= False # TODO Implement chroot
 
 HOST_TRIPLET	= subprocess.run(
 	"gcc -dumpmachine",
@@ -42,12 +48,6 @@ HOST_TRIPLET	= subprocess.run(
 	capture_output=True
 ).stdout.decode("utf-8").strip("\n")
 
-NB_PROC			= os.cpu_count()
-
-if USE_LOCAL_HOME:
-	CNF_PREFIX	= os.path.expanduser("~/.local")
-else:
-	CNF_PREFIX	= "/usr"
 METADATA		= dict(md.metadata("dot_mngr"))
 
 CWD				= os.getcwd()
@@ -72,7 +72,6 @@ with open(os.path.join(DIR_BASE, ".env"), 'r') as f:
 env = configparser.ConfigParser()
 env.read_string(config_string)
 
-from pprint import pprint
 ENV = env["s"]
 
 PACKAGES	= [
@@ -175,8 +174,12 @@ PACKAGES	= [
 # ]
 
 # UTILS
-from	.utils.ansi				import ansi					as a
 from 	.utils.regex			import regex				as r
+from	.utils.ansi				import ansi					as a
+
+# CLI PARSING
+from 	.parsing				import Parsing
+
 from 	.utils.progress_bar		import ProgressBar
 from 	.utils					import url_handler
 from 	.utils					import unicode				as u
@@ -186,6 +189,7 @@ from	.utils._print			import _print				as p
 from 	.utils._os				import Os
 
 from 	.utils._json			import Json
+
 
 # SCRAP
 from 	.scrap					import scrap
@@ -201,9 +205,6 @@ from 	.command				import a_cmd
 
 # PACKAGE
 from	.package				import Package
-
-# CLI PARSING
-from 	.parsing				import Parsing
 
 # CONFIG
 from 	.config					import conf

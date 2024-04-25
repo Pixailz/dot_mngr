@@ -20,12 +20,12 @@ def check(self):
 
 def install(self):
 	self.cmd_run(
-		f"sudo make PREFIX={CNF_PREFIX} install && "
-		f"sudo cp -av libbz2.so.* {CNF_PREFIX}/lib && "
-		f"sudo ln -fsv libbz2.so.${self.version} {CNF_PREFIX}/lib/libbz2.so && "
-	 	f"sudo cp -v bzip2-shared {CNF_PREFIX}/bin/bzip2 && "
-		f"for i in {CNF_PREFIX}/bin/""{bzcat,bunzip2}; do sudo ln -sfv bzip2 $i; done && "
-		f"sudo rm -fv {CNF_PREFIX}/lib/libbz2.a"
+		f"sudo make PREFIX={PREFIX} install && "
+		f"sudo cp -av libbz2.so.* {PREFIX}/lib && "
+		f"sudo ln -fsv libbz2.so.${self.version} {PREFIX}/lib/libbz2.so && "
+	 	f"sudo cp -v bzip2-shared {PREFIX}/bin/bzip2 && "
+		f"for i in {PREFIX}/bin/""{bzcat,bunzip2}; do sudo ln -sfv bzip2 $i; done && "
+		f"sudo rm -fv {PREFIX}/lib/libbz2.a"
 	)
 
 def uninstall(self):

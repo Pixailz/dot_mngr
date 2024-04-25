@@ -1,4 +1,5 @@
-from dot_mngr import *
+from dot_mngr import urllib
+from dot_mngr import WRITE_HTML
 
 def req_decode(resp):
 	if resp.info().get("Content-Encoding") == "gzip":

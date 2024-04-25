@@ -4,8 +4,8 @@ from dot_mngr import *
 
 def configure(self):
 	self.cmd_run(
-		f"./configure --prefix={CNF_PREFIX}"
-		f" --docdir={CNF_PREFIX}/share/doc/{self.name}-{self.version}"
+		f"./configure --prefix={PREFIX}"
+		f" --docdir={PREFIX}/share/doc/{self.name}-{self.version}"
 	)
 
 def compile(self):

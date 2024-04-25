@@ -16,7 +16,7 @@ setup(
 			"dot_mngr = dot_mngr.__main__:main"
 		]
 	},
-    description="A package manager for architecture and not for distribution",
+    description="A package manager for architecture, not for distribution",
 	long_description=long_description,
 	long_description_content_type="text/markdown",
 	install_requires=required,

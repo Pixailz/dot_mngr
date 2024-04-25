@@ -3,7 +3,7 @@
 from dot_mngr import *
 
 def configure(self):
-	self.cmd_run(f"./configure --prefix={CNF_PREFIX}")
+	self.cmd_run(f"./configure --prefix={PREFIX}")
 
 def compile(self):
 	self.cmd_run("make")
