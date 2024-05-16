@@ -1,4 +1,5 @@
 from dot_mngr import os
+from dot_mngr import copy
 from dot_mngr import datetime
 from dot_mngr import ThreadPoolExecutor
 
@@ -138,7 +139,7 @@ class Config():
 
 	# INSTALL
 	def install_package(self):
-		to_install = getattr(self.parsing.args, "inst_package", None)
+		to_install = copy.deepcopy(getattr(self.parsing.args, "inst_package", None))
 
 		if not to_install:
 			p.fail("No package to install")

@@ -1,3 +1,4 @@
+from dot_mngr import os
 from dot_mngr import argparse
 
 from dot_mngr import a
@@ -161,7 +162,7 @@ class Parsing():
 
 	def post_parse_prefix(self):
 		use_prefix = getattr(self.args, "glob_use_prefix", None)
-		use_home_dir = getattr(self.args, "glob_use_home_dir", None)
+		use_home_dir = getattr(self.args, "glob_use_home", None)
 
 		if use_prefix:
 			dm.PREFIX = use_prefix

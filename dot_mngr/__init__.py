@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import copy
 import enum
 import gzip
 import json

@@ -102,18 +102,28 @@ class Package():
 	def prepare_tarball_real(self):
 		ftar = tar.open(self.file_path, "r")
 		ftar_names = ftar.getnames()
+		have_dir = True
 		if len(ftar_names) > 0:
 			match = r.tar_dir.match(ftar_names[0])
 			if match:
 				ftar_name = match.group(1)
 			else:
 				ftar_name = ftar_names[0]
-			self.tar_folder = os.path.join(DIR_CACHE, ftar_name)
+			if ftar.getmember(ftar_name).isdir():
+				self.tar_folder = os.path.join(DIR_CACHE, ftar_name)
+			else:
+				self.tar_folder = os.path.join(DIR_CACHE, self.name)
+				have_dir = False
+
 			if os.path.exists(self.tar_folder):
 				shutil.rmtree(self.tar_folder)
 				p.warn("Removing old tar folder")
+
 		p.info(f"Extracting {self.name}")
-		ftar.extractall(DIR_CACHE)
+		if have_dir:
+			ftar.extractall(DIR_CACHE)
+		else:
+			ftar.extractall(self.tar_folder)
 		p.success(f"Extracted {self.name}")
 
 	def prepare_tarball(self):
