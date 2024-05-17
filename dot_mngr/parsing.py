@@ -43,7 +43,7 @@ class Parsing():
 		)
 
 		self.parser.add_argument(
-			"--nrpoc",
+			"--nproc",
 			type=int,
 			help="set the number of processes to use",
 			default=dm.NB_PROC,
