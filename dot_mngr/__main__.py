@@ -1,8 +1,18 @@
 from dot_mngr import *
 from pprint import pprint
 
+def git_clone(author, repo, branch=None, dest=None):
+	cmd = f"git clone {author}@github.com"
+
 def	main():
-	conf.load_packages()
+	# conf.load_packages()
+	git_clone("Pixailz", "dot_mngr", dest="test")
+
+	try:
+		conf.load_repository()
+	except Exception as e:
+		p.fail(e)
+		sys.exit(1)
 
 	pprint(conf.parsing.args)
 

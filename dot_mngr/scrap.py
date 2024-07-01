@@ -2,11 +2,12 @@ import json
 from urllib.request import Request
 from urllib.parse import urlparse
 
-from datetime import datetime
+from dot_mngr import datetime
 
 from dot_mngr import ENV
 from dot_mngr import p, r, url_handler
 
+from dot_mngr import pprint
 
 class Scrap():
 	def __init__(self):
@@ -18,12 +19,11 @@ class Scrap():
 
 	def latest_link(self, package):
 		ptype = package.type
-
-		if "scrap_" + package.type in self.scrap_func:
-			return Scrap.__dict__["scrap_" + package.type](self, package)
+		func_name = f"scrap_{ptype}"
+		if func_name in self.scrap_func:
+			return Scrap.__dict__[func_name](self, package)
 		else:
-			p.warn(f"Scrap function not found for {package.name}, "
-				+ package.type)
+			p.warn(f"Scrap function not found for {package.name}, {ptype}")
 
 		return (None, None)
 

@@ -5,7 +5,7 @@ from dot_mngr import importlib
 from dot_mngr import selectors
 from dot_mngr import subprocess
 
-from dot_mngr import DIR_REPO, FILE_META, FILE_COMMAND, DIR_CACHE, DIR_LOG
+from dot_mngr import FILE_META, FILE_COMMAND, DIR_CACHE, DIR_LOG
 from dot_mngr import DRY_RUN
 
 from dot_mngr import p, r, Os, Json
@@ -20,9 +20,10 @@ from dot_mngr import default_uninstall
 from dot_mngr import default_suite
 
 class Package():
-	def __init__(self, name):
+	def __init__(self, name, dir_repo):
 		self.name = name
-		self.d_base = os.path.join(DIR_REPO, self.name)
+		self.dir_repo = dir_repo
+		self.d_base = os.path.join(self.dir_repo, self.name)
 		self.f_meta = os.path.join(self.d_base, FILE_META)
 		self.f_command = os.path.join(self.d_base, FILE_COMMAND)
 

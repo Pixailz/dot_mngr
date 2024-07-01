@@ -1,14 +1,15 @@
 from dot_mngr import os
 from dot_mngr import copy
-from dot_mngr import datetime
-from dot_mngr import ThreadPoolExecutor
 
 from dot_mngr import p
-from dot_mngr import Json, Os, Package, Parsing
+from dot_mngr import Json, Os, Package, Parsing, Repository
+from dot_mngr import RepoError
 from dot_mngr import p_elapsed
 
-from dot_mngr import DIR_REPO, DIR_CACHE, DIR_LOG, FILE_META, PACKAGES, PREFIX
+from dot_mngr import DIR_CONFIG, DIR_REPO, DIR_CACHE, DIR_LOG, FILE_META, PACKAGES, PREFIX
 from dot_mngr import NB_PROC
+
+from dot_mngr import sys
 
 def uniq_list(lst):
 	new_list = list()
@@ -66,7 +67,6 @@ def dependencies_get_not_installed(to_install):
 
 	return to_install
 
-
 	# sys.exit(130)
 	# for i in to_install:
 	# 	if not self.conf.packages.get(i):
@@ -109,33 +109,23 @@ class Config():
 		p_elapsed("LOAD END")
 		p.success(f"Loaded {nb_packages} packages")
 
+	def load_repository(self):
+		p_elapsed("LOAD BEGIN")
+
+		with open(os.path.join(DIR_CONFIG, "sources.list")) as f:
+			sources = f.read().splitlines()
+
+		self.repository = dict()
+
+		for source in sources:
+			self.repository[source[0]] = Repository(source)
+
+		p_elapsed("LOAD END")
+
 	# UPDATE
 	def update_repo(self):
-		p.info("Updating packages")
-		Package.hdr_info()
-
-		if self.parsing.args.glob_no_thread:
-			self.update_repo_no_thread()
-		else:
-			self.update_repo_thread()
-
-		self.last_checked = datetime.datetime.now().timestamp()
-		Json.dump({
-			"last_checked": self.last_checked,
-			"packages": self.list_packages
-		}, os.path.join(DIR_REPO, FILE_META))
-
-	def update_repo_thread(self):
-		pool = ThreadPoolExecutor(NB_PROC)
-		p.info(f"Pool worker: {pool._max_workers}")
-		for package in self.packages.values():
-			pool.submit(package.update)
-
-		pool.shutdown(wait=True, cancel_futures=False)
-
-	def update_repo_no_thread(self):
-		for package in self.packages.values():
-			package.update()
+		for repo in self.repository.values():
+			repo.update(self.parsing.args.glob_no_thread)
 
 	# INSTALL
 	def install_package(self):
@@ -175,7 +165,12 @@ class Config():
 	def info_package(self):
 		self.print_last_checked()
 		Package.hdr_info()
-		for package in self.packages.values():
-			package.info()
+		for repo in self.repository.values():
+			p.set_lvl(0)
+			p.title(repo.name)
+			p.set_lvl(1)
+			for package in repo.packages.values():
+				package.info()
+			print()
 
 conf = Config()

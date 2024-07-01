@@ -19,6 +19,8 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from importlib import metadata as md
 from timeit import default_timer as timer
 
+from pprint import pprint
+
 BEGIN_TS = timer()
 ELAPSED_LVL = 0
 
@@ -52,9 +54,17 @@ HOST_TRIPLET	= subprocess.run(
 METADATA		= dict(md.metadata("dot_mngr"))
 
 CWD				= os.getcwd()
-DIR_BASE		= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+# DIR_BASE		= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+DIR_BASE		= os.path.dirname(os.path.realpath(__file__))
+HOME			= os.environ.get("HOME", None)
 
-DIR_REPO		= os.path.join(DIR_BASE, "repo")
+DIR_CONFIG		= os.environ.get("XDG_CONFIG_HOME", None)
+if DIR_CONFIG is None:
+	DIR_CONFIG = os.path.realpath(os.path.join(HOME, ".config/"))
+
+DIR_CONFIG		= os.path.join(DIR_CONFIG, "dot_mngr")
+
+DIR_REPO		= os.path.join(DIR_CONFIG, "repo")
 DIR_CACHE		= os.path.join(DIR_BASE, "cache")
 DIR_LOG			= os.path.join(DIR_BASE, "log")
 
@@ -67,8 +77,21 @@ PROMPT_RIGHT_SIZE = 60
 PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
 
 # LOADING ENV
-with open(os.path.join(DIR_BASE, ".env"), 'r') as f:
-	config_string = '[s]\n' + f.read()
+ENV_FILE = os.path.join(DIR_CONFIG, ".env")
+
+def	shrink_path(path: str):
+	if path.startswith(CWD):
+		return path.replace(CWD, ".")
+	if path.startswith(HOME):
+		return path.replace(HOME, "~")
+	return path
+
+try:
+	with open(ENV_FILE, 'r') as f:
+		config_string = '[s]\n' + f.read()
+except FileNotFoundError as e:
+	print(f"{shrink_path(ENV_FILE)} not found, and relaunch dot_mngr")
+	sys.exit(130)
 
 env = configparser.ConfigParser()
 env.read_string(config_string)
@@ -174,6 +197,10 @@ PACKAGES	= [
 # 	"a", "b", "c", "d", "e", "f", "g"
 # ]
 
+# EXCEPTION
+
+from	.exception				import RepoError
+
 # UTILS
 from 	.utils.regex			import regex				as r
 from	.utils.ansi				import ansi					as a
@@ -206,6 +233,9 @@ from 	.command				import a_cmd
 
 # PACKAGE
 from	.package				import Package
+
+# REPOSITORY
+from	.repository				import Repository
 
 # CONFIG
 from 	.config					import conf

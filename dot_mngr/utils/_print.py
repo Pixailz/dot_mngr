@@ -26,7 +26,7 @@ class	Print():
 		if len(hdr) > 0:
 			to_print += a.SEP
 
-		print(to_print + string, end=end)
+		print(to_print + str(string), end=end)
 
 	def	info(
 			self,
