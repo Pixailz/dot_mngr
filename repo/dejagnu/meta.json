@@ -1,6 +1,0 @@
-{
-    "value": "https://ftp.gnu.org/gnu/dejagnu",
-    "type": "apache",
-    "prefix": "dejagnu-",
-    "suffix": ".tar.gz"
-}

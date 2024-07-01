@@ -64,9 +64,10 @@ if DIR_CONFIG is None:
 
 DIR_CONFIG		= os.path.join(DIR_CONFIG, "dot_mngr")
 
+DIR_RSC			= os.path.join(DIR_BASE, "rsc")
 DIR_REPO		= os.path.join(DIR_CONFIG, "repo")
-DIR_CACHE		= os.path.join(DIR_BASE, "cache")
-DIR_LOG			= os.path.join(DIR_BASE, "log")
+DIR_CACHE		= os.path.join(DIR_CONFIG, "cache")
+DIR_LOG			= os.path.join(DIR_CONFIG, "log")
 
 FILE_META		= "meta.json"
 FILE_COMMAND	= "command.py"
@@ -86,85 +87,18 @@ def	shrink_path(path: str):
 		return path.replace(HOME, "~")
 	return path
 
+ENV = dict()
+
+
 try:
 	with open(ENV_FILE, 'r') as f:
 		config_string = '[s]\n' + f.read()
+	env = configparser.ConfigParser()
+	env.read_string(config_string)
+
+	ENV = env["s"]
 except FileNotFoundError as e:
-	print(f"{shrink_path(ENV_FILE)} not found, and relaunch dot_mngr")
-	sys.exit(130)
-
-env = configparser.ConfigParser()
-env.read_string(config_string)
-
-ENV = env["s"]
-
-PACKAGES	= [
-	"acl", "attr", "autoconf", "automake",
-
-	"bash", "bc", "binutils", "bison", "bzip2",
-
-	"check", "coreutils", "cracklib", "cracklib-wordlist",
-
-	"dbus", "diffutils",
-
-	"e2fsprogs", "elfutils", "eudev", "expat", "expect",
-
-	"file", "findutils", "flex", "flit-core",
-
-	"gawk", "gcc", "gdbm", "gettext", "glibc", "gmp", "gperf", "grep", "groff",
-	"grub", "gzip",
-
-	"iana-etc", "inetutils", "intltool", "iproute2",
-
-	"jinja2",
-
-	"kbd", "kmod",
-
-	"less", "lfs-bootscripts", "libcap", "libffi", "libpipeline", "libtasn1",
-	"libtool", "libxcrypt", "linux",
-
-	"m4", "make", "make-ca", "man-db", "man-pages", "markup-safe", "meson",
-	"mpc", "mpfr",
-
-	"ncurses", "ninja", "nspr", "nss",
-
-	"openssl",
-
-	"p11-kit", "patch", "perl", "pkgconf", "procps-ng", "psmisc", "python3",
-	"python3-doc",
-
-	"readline",
-
-	"sed", "setuptools", "shadow", "sysklogd", "systemd", "systemd-man-pages",
-	"sysvinit",
-
-	"tar", "tcl", "tcl-doc", "terminus", "texinfo", "tzdata",
-
-	"udev-lfs", "util-linux",
-
-	"vim",
-
-	"wheel",
-
-	"xml-parser", "xz",
-
-	"zlib", "zstd"
-]
-
-# PACKAGES = [
-# 	"acl",				# apache
-# 	"elfutils",			# apache_dir
-# 	"iproute2",			# apache_no_sort
-# 	"bc",				# github
-# 	"e2fsprogs",		# github_tag
-# 	"libxslt",			# gitlab
-# 	"expect",			# fossies
-# 	"tcl-doc",			# fossies_search
-# 	"flit-core",		# pypi
-# 	"intltool",			# website
-# 	"util-linux",		# no_scrap
-# 	"psmisc",			# sourceforge
-# ]
+	pass
 
 # TODO Check why package downloader fail to properly pad, with those package
 # PACKAGES = [
@@ -185,18 +119,6 @@ PACKAGES	= [
 # 	"udev-lfs",
 # ]
 
-# PACKAGES = [
-# 	# "bash",
-# 	# "less",
-# 	# "linux",
-# 	"bc"
-# 	# "acl"
-# ]
-
-# PACKAGES = [
-# 	"a", "b", "c", "d", "e", "f", "g"
-# ]
-
 # EXCEPTION
 
 from	.exception				import RepoError
@@ -204,9 +126,7 @@ from	.exception				import RepoError
 # UTILS
 from 	.utils.regex			import regex				as r
 from	.utils.ansi				import ansi					as a
-
-# CLI PARSING
-from 	.parsing				import Parsing
+from	.utils.git				import Git
 
 from 	.utils.progress_bar		import ProgressBar
 from 	.utils					import url_handler
@@ -218,6 +138,8 @@ from 	.utils._os				import Os
 
 from 	.utils._json			import Json
 
+# CLI PARSING
+from 	.parsing				import Parsing
 
 # SCRAP
 from 	.scrap					import scrap

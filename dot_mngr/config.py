@@ -1,13 +1,14 @@
 from dot_mngr import os
 from dot_mngr import copy
+from dot_mngr import shutil
 
 from dot_mngr import p
 from dot_mngr import Json, Os, Package, Parsing, Repository
 from dot_mngr import RepoError
 from dot_mngr import p_elapsed
 
-from dot_mngr import DIR_CONFIG, DIR_REPO, DIR_CACHE, DIR_LOG, FILE_META, PACKAGES, PREFIX
-from dot_mngr import NB_PROC
+from dot_mngr import DIR_CONFIG, DIR_RSC, DIR_REPO, DIR_CACHE, DIR_LOG
+from dot_mngr import FILE_META, PREFIX, NB_PROC
 
 from dot_mngr import sys
 
@@ -81,15 +82,25 @@ class Config():
 	def __init__(self):
 		self.parsing = Parsing()
 		self.create_dir()
+		self.copy_default_file()
 		self.load_meta()
 
 	def create_dir(self):
+		Os.mkdir(DIR_CONFIG)
 		Os.mkdir(DIR_REPO)
 		Os.mkdir(DIR_CACHE)
 		Os.mkdir(DIR_LOG, True)
 
 		# for dir in ["bin", "etc", "lib", "lib64", "share", "var"]:
 		# 	Os.mkdir(os.path.join(PREFIX, dir))
+
+	def copy_default_file(self):
+		env_file_path = os.path.join(DIR_CONFIG, ".env")
+		if not os.path.isfile(env_file_path):
+			shutil.copy2(os.path.join(DIR_RSC, ".env.template"), env_file_path)
+		source_list_path = os.path.join(DIR_CONFIG, "sources.list")
+		if not os.path.isfile(source_list_path):
+			shutil.copy2(os.path.join(DIR_RSC, "sources.list"), source_list_path)
 
 	def load_meta(self):
 		meta = Json.load(os.path.join(DIR_REPO, FILE_META))
@@ -98,16 +109,6 @@ class Config():
 			meta = dict()
 		self.last_checked = meta.get("last_checked")
 		self.list_packages = meta.get("packages")
-
-	def load_packages(self):
-		nb_packages = len(PACKAGES)
-		p_elapsed("LOAD BEGIN")
-		p.info(f"Loading {nb_packages} packages")
-		self.packages = dict()
-		for package in PACKAGES:
-			self.packages[package] = Package(package)
-		p_elapsed("LOAD END")
-		p.success(f"Loaded {nb_packages} packages")
 
 	def load_repository(self):
 		p_elapsed("LOAD BEGIN")

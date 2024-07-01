@@ -5,6 +5,7 @@ from dot_mngr import ThreadPoolExecutor
 
 from dot_mngr import Package
 from dot_mngr import Json
+from dot_mngr import Git
 from dot_mngr import RepoError
 from dot_mngr import p
 from dot_mngr import DIR_REPO, FILE_META, NB_PROC
@@ -31,13 +32,11 @@ class Repository():
 	def init_repo(self):
 		if os.path.isdir(self.base_dir):
 			print("Repo already here")
-			# TODO: update already cloned repo
-			#git.update()
-			self.load_packages()
+			# Git.update(self.base_dir)
 		else:
 			print("Repo not here")
-			# TODO: clone repo
-			#git.clone()
+			Git.clone(self.link, self.branch, self.base_dir)
+		self.load_packages()
 
 	def get_packages(self):
 		readed = Json.load(self.f_meta)
