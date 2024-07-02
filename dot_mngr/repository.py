@@ -25,8 +25,9 @@ class Repository():
 		self.base_dir = os.path.join(DIR_REPO, self.name)
 		self.f_meta = os.path.join(self.base_dir, FILE_META)
 		self.link = tmp[1]
-		self.branch = tmp[2]
-
+		self.branch = None
+		if len(tmp) == 3:
+			self.branch = tmp[2]
 		self.init_repo()
 
 	def init_repo(self):
@@ -45,12 +46,10 @@ class Repository():
 	def load_packages(self):
 		self.get_packages()
 		nb_packages = len(self.list_packages)
-		p_elapsed("LOAD BEGIN")
 		p.info(f"Loading {nb_packages} packages")
 		self.packages = dict()
 		for package in self.list_packages:
 			self.packages[package] = Package(package, self.base_dir)
-		p_elapsed("LOAD END")
 		p.success(f"Loaded {nb_packages} packages")
 
 	def update(self, threaded):

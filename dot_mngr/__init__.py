@@ -33,19 +33,20 @@ def p_elapsed(msg=""):
 	print(f"[{elapsed_lvl}][{elapsed_time}] {msg}")
 
 # PARSED ARGS
+DEBUG			= True
 ## GLOBAL
 DRY_RUN			= False
 PREFIX			= "/usr"
 NB_PROC			= os.cpu_count()
 
-# UPDATE
+## UPDATE
 WRITE_HTML		= False
 
-# INSTALL
+## INSTALL
 DO_CHECK		= True
 DO_CHROOT		= False # TODO Implement chroot
 
-HOST_TRIPLET	= subprocess.run(
+TARGET_TRIPLET	= subprocess.run(
 	"gcc -dumpmachine",
 	shell=True,
 	capture_output=True
@@ -72,7 +73,7 @@ DIR_LOG			= os.path.join(DIR_CONFIG, "log")
 FILE_META		= "meta.json"
 FILE_COMMAND	= "command.py"
 
-TERM_COLS, TERM_ROWS = os.get_terminal_size()
+TERM_COLS, TERM_ROWS = shutil.get_terminal_size(fallback=(120, 50))
 
 PROMPT_RIGHT_SIZE = 60
 PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
@@ -88,7 +89,6 @@ def	shrink_path(path: str):
 	return path
 
 ENV = dict()
-
 
 try:
 	with open(ENV_FILE, 'r') as f:
@@ -161,3 +161,5 @@ from	.repository				import Repository
 
 # CONFIG
 from 	.config					import conf
+from	.config					import extract_file_from_package
+from	.config					import get_version_from_package

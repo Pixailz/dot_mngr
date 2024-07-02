@@ -5,12 +5,12 @@ from dot_mngr import shutil
 from dot_mngr import p
 from dot_mngr import Json, Os, Package, Parsing, Repository
 from dot_mngr import RepoError
-from dot_mngr import p_elapsed
 
 from dot_mngr import DIR_CONFIG, DIR_RSC, DIR_REPO, DIR_CACHE, DIR_LOG
 from dot_mngr import FILE_META, PREFIX, NB_PROC
 
 from dot_mngr import sys
+from dot_mngr import pprint
 
 def uniq_list(lst):
 	new_list = list()
@@ -76,7 +76,6 @@ def dependencies_get_not_installed(to_install):
 
 	# 	self.conf.packages[i].cmd["suite"]()
 
-
 class Config():
 	# INIT
 	def __init__(self):
@@ -89,7 +88,7 @@ class Config():
 		Os.mkdir(DIR_CONFIG)
 		Os.mkdir(DIR_REPO)
 		Os.mkdir(DIR_CACHE)
-		Os.mkdir(DIR_LOG, True)
+		Os.mkdir(DIR_LOG)
 
 		# for dir in ["bin", "etc", "lib", "lib64", "share", "var"]:
 		# 	Os.mkdir(os.path.join(PREFIX, dir))
@@ -111,8 +110,6 @@ class Config():
 		self.list_packages = meta.get("packages")
 
 	def load_repository(self):
-		p_elapsed("LOAD BEGIN")
-
 		with open(os.path.join(DIR_CONFIG, "sources.list")) as f:
 			sources = f.read().splitlines()
 
@@ -121,7 +118,11 @@ class Config():
 		for source in sources:
 			self.repository[source[0]] = Repository(source)
 
-		p_elapsed("LOAD END")
+		self.packages = dict()
+
+		for repo in self.repository.values():
+			for k, v in repo.packages.items():
+				self.packages[k] = v
 
 	# UPDATE
 	def update_repo(self):
@@ -175,3 +176,30 @@ class Config():
 			print()
 
 conf = Config()
+
+def get_package_from_name(package_name: str):
+	package = conf.packages.get(package_name, None)
+	if package is None:
+		p.fail(f"Package {package_name} not found")
+		return
+	return package
+
+def extract_file_from_package(
+		package_name: str,
+		dest: str = None,
+	):
+	package = get_package_from_name(package_name)
+	if package is None:
+		return
+
+	package.get_file()
+	print(os.getcwd())
+	package.prepare_tarball(dest)
+
+def get_version_from_package(
+		package_name: str
+	):
+	package = get_package_from_name(package_name)
+	if package is None:
+		return
+	return package.version

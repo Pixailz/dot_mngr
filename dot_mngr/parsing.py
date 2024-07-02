@@ -68,6 +68,13 @@ class Parsing():
 			metavar=a.HM_PATH,
 		)
 
+		self.parser.add_argument(
+			"--target-triplet", "-T",
+			type=str,
+			help="set the linux triplet target",
+			dest="glob_target_triplet",
+		)
+
 		# LOGING / STYLE
 		self.parser.add_argument(
 			"--no-ansi", "-A",
@@ -155,6 +162,7 @@ class Parsing():
 		self.post_parse_dry_run()
 		self.post_parse_no_ansi()
 		self.post_parse_nproc()
+		self.post_parse_triplet()
 
 		self.post_parse_install()
 
@@ -185,6 +193,15 @@ class Parsing():
 
 		if tmp > 0 and tmp < dm.NB_PROC:
 			dm.NB_PROC = tmp
+
+	def post_parse_triplet(self):
+		tmp = getattr(self.args, "glob_target_triplet", None)
+
+		if not tmp is None:
+			dm.TARGET_TRIPLET = tmp
+
+		triplet = dm.TARGET_TRIPLET.split("-")
+		dm.ARCH = triplet[0]
 
 	def post_parse_update(self):
 		self.post_parse_update_write_html()

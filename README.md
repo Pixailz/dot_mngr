@@ -36,10 +36,10 @@ here is a default
 
 ## TODO
 
-1. split repo
-1. once finished do:
-   1. the doc
-   1. test suite
-   1. workflows to update repo:
-      1. split repo folder into githubs, referencing package as needed, provide
-      with template, actions can update repo
+1. test if repo implementation is good
+  1. might break in some edge cases
+1. the doc
+1. test suite
+1. workflows to update repo:
+  1. split repo folder into githubs, referencing package as needed, provide
+  with template, actions can update repo

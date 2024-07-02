@@ -6,7 +6,7 @@ from dot_mngr import selectors
 from dot_mngr import subprocess
 
 from dot_mngr import FILE_META, FILE_COMMAND, DIR_CACHE, DIR_LOG
-from dot_mngr import DRY_RUN
+from dot_mngr import DRY_RUN, NB_PROC
 
 from dot_mngr import p, r, Os, Json
 from dot_mngr import a_cmd
@@ -52,6 +52,7 @@ class Package():
 		self.suffix = meta.get("suffix")
 		self.link = meta.get("link")
 		self.version = meta.get("version")
+		self.patchs = meta.get("patchs")
 		self.files = meta.get("files")
 		self.dependencies = meta.get("dependencies")
 
@@ -84,10 +85,8 @@ class Package():
 	def prepare(self):
 		from dot_mngr import conf
 
-		if not os.path.exists(self.file_path):
-			self.get_file()
-		if tar.is_tarfile(self.file_path):
-			self.prepare_tarball()
+		self.get_file()
+		self.prepare_tarball()
 		self.conf = conf
 
 		self.f_log_out = open(self.log_out, "ab")
@@ -100,40 +99,52 @@ class Package():
 
 		self.prepared = True
 
-	def prepare_tarball_real(self):
+	def prepare_tarball_real(self, dest: str):
 		ftar = tar.open(self.file_path, "r")
 		ftar_names = ftar.getnames()
 		have_dir = True
 		if len(ftar_names) > 0:
-			match = r.tar_dir.match(ftar_names[0])
+			for i in range(0, 2):
+				match = r.tar_dir.match(ftar_names[i])
+				if match:
+					break
+
 			if match:
-				ftar_name = match.group(1)
-			else:
-				ftar_name = ftar_names[0]
-			if ftar.getmember(ftar_name).isdir():
-				self.tar_folder = os.path.join(DIR_CACHE, ftar_name)
+				self.tar_folder = os.path.join(DIR_CACHE, match.group(1))
 			else:
 				self.tar_folder = os.path.join(DIR_CACHE, self.name)
 				have_dir = False
 
+		if dest is None:
 			if os.path.exists(self.tar_folder):
 				shutil.rmtree(self.tar_folder)
 				p.warn("Removing old tar folder")
 
-		p.info(f"Extracting {self.name}")
-		if have_dir:
-			ftar.extractall(DIR_CACHE)
-		else:
-			ftar.extractall(self.tar_folder)
-		p.success(f"Extracted {self.name}")
+			p.info(f"Extracting {self.name}")
+			if have_dir:
+				ftar.extractall(DIR_CACHE)
+			else:
+				ftar.extractall(self.tar_folder)
+			p.success(f"Extracted {self.name}")
 
-	def prepare_tarball(self):
-		if DRY_RUN:
-			self.tar_folder = os.path.join(DIR_CACHE, self.name)
-			Os.mkdir(self.tar_folder)
-			p.dr(f"Creating {self.tar_folder}")
 		else:
-			self.prepare_tarball_real()
+			p.info(f"Extracting {self.name} into {dest}")
+			ftar.extractall(dest)
+			p.success(f"Extracted {self.name} into {dest}")
+
+	def prepare_tarball(self, dest: str = None):
+		if not tar.is_tarfile(self.file_path):
+			return
+		if DRY_RUN:
+			if dest is None:
+				self.tar_folder = os.path.join(DIR_CACHE, self.name)
+				dest = self.tar_folder
+
+			Os.mkdir(dest)
+			p.dr(f"Creating {dest}")
+
+		else:
+			self.prepare_tarball_real(dest)
 
 	@staticmethod
 	def info_col(
@@ -198,6 +209,7 @@ class Package():
 			"suffix": self.suffix,
 			"link": self.link,
 			"version": self.version,
+			"patchs": self.patchs,
 			"files": self.files,
 			"dependencies": self.dependencies
 		}, self.f_meta)
@@ -216,7 +228,7 @@ class Package():
 		p.success(f"{self.file_name} already exists")
 		return True
 
-	def cmd_run_real(self, cmd):
+	def cmd_run_real(self, cmd: str, nb_proc: int):
 		def p_out(stream):
 			out = stream.readline()
 			if out:
@@ -238,7 +250,7 @@ class Package():
 		proc = subprocess.Popen(cmd,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.PIPE,
-			env=Os.get_env(),
+			env=Os.get_env(nb_proc),
 			shell=True,
 			close_fds=True,
 		)
@@ -261,15 +273,17 @@ class Package():
 
 		return retv
 
-	def cmd_run(self, cmd : str):
+	def cmd_run(self, cmd: str, nb_proc: int = NB_PROC):
 		if DRY_RUN:
 			p.dr(cmd)
 		else:
-			return self.cmd_run_real(cmd)
+			return self.cmd_run_real(cmd, nb_proc)
 
-	def apply_patch(self, opt, path):
+	def apply_patch(self, name, opt):
+		url = self.patchs[name]
+		path = os.path.join(self.tar_folder, name)
+		url_handler.download_file(url, path)
 		self.cmd_run(f"patch {opt} -i {path}")
 
-	def dapply_patch(self, url, opt, name):
-		url_handler.download_file(url, self.tar_folder + name)
-		self.apply_patch(opt, self.tar_folder + name)
+	def take_build(self):
+		Os.take(os.path.join(self.tar_folder, "build"))

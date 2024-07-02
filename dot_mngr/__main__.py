@@ -4,11 +4,14 @@ from pprint import pprint
 def	main():
 	conf.load_repository()
 
-	print(f"{PREFIX     = }")
-	print(f"{DRY_RUN    = }")
-	print(f"{WRITE_HTML = }")
-	print(f"{DO_CHECK   = }")
-	print(f"{NB_PROC    = }")
+	if DEBUG:
+		print(f"{PREFIX            = }")
+		print(f"{DRY_RUN           = }")
+		print(f"{WRITE_HTML        = }")
+		print(f"{DO_CHECK          = }")
+		print(f"{NB_PROC           = }")
+		print(f"{TARGET_TRIPLET    = }")
+		print(f"{ARCH              = }")
 
 	match conf.parsing.args.command:
 		case "update":
