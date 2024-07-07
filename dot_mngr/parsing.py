@@ -5,14 +5,6 @@ from dot_mngr import a
 from dot_mngr import METADATA as MD
 import dot_mngr as dm
 
-# PARSED ARGS
-## GLOBAL
-DRY_RUN			= False
-PREFIX			= "/usr"
-
-## UPDATE
-WRITE_HTML		= False
-
 class Parsing():
 	def __init__(self):
 		# BASE
@@ -139,6 +131,14 @@ class Parsing():
 		)
 
 		install.add_argument(
+			"--extract-folder", "-X",
+			type=str,
+			help="set the folder to extract the package",
+			default=dm.DIR_CACHE,
+			dest="inst_extract_folder",
+		)
+
+		install.add_argument(
 			"inst_package",
 			type=str,
 			nargs="+",
@@ -211,6 +211,12 @@ class Parsing():
 
 	def post_parse_install(self):
 		self.post_parse_install_disable_check()
+		self.post_parse_install_extract_folder()
 
 	def post_parse_install_disable_check(self):
 		dm.DO_CHECK = getattr(self.args, "inst_disable_check", dm.DO_CHECK)
+
+	def post_parse_install_extract_folder(self):
+		tmp = getattr(self.args, "inst_extract_folder", None)
+		if not tmp is None:
+			dm.DIR_CACHE = tmp

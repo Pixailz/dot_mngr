@@ -28,6 +28,9 @@ def default_suite(self):
 		self.cmd["check"]()
 	self.cmd["install"]()
 
+	if self.chrooted:
+		self.unchroot()
+
 	os.chdir(self.oldpwd)
 	shutil.rmtree(self.tar_folder)
 

@@ -11,7 +11,6 @@ import shutil
 import argparse
 import datetime
 import importlib
-import selectors
 import subprocess
 import configparser
 
@@ -47,7 +46,7 @@ DO_CHECK		= True
 DO_CHROOT		= False # TODO Implement chroot
 
 TARGET_TRIPLET	= subprocess.run(
-	"gcc -dumpmachine",
+	"/bin/gcc -dumpmachine",
 	shell=True,
 	capture_output=True
 ).stdout.decode("utf-8").strip("\n")
@@ -128,11 +127,12 @@ from 	.utils.regex			import regex				as r
 from	.utils.ansi				import ansi					as a
 from	.utils.git				import Git
 
+from	.utils._print			import _print				as p
+
 from 	.utils.progress_bar		import ProgressBar
 from 	.utils					import url_handler
 from 	.utils					import unicode				as u
 
-from	.utils._print			import _print				as p
 
 from 	.utils._os				import Os
 
@@ -163,3 +163,4 @@ from	.repository				import Repository
 from 	.config					import conf
 from	.config					import extract_file_from_package
 from	.config					import get_version_from_package
+from	.config					import download_package

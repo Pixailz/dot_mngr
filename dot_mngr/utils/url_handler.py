@@ -1,6 +1,7 @@
 from dot_mngr import urllib
 from dot_mngr import WRITE_HTML
 from dot_mngr import ProgressBar
+from dot_mngr import p
 
 def req_decode(resp):
 	if resp.info().get("Content-Encoding") == "gzip":
@@ -50,5 +51,5 @@ def download_file(url, path):
 
 	return True
 
-def download_package(package):
-	return download_file(package.link, package.file_path)
+def download_package(self):
+	return download_file(self.link, self.chrooted_get_path(self.file_path))

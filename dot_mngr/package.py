@@ -2,11 +2,9 @@ from dot_mngr import os
 from dot_mngr import tar
 from dot_mngr import shutil
 from dot_mngr import importlib
-from dot_mngr import selectors
 from dot_mngr import subprocess
 
-from dot_mngr import FILE_META, FILE_COMMAND, DIR_CACHE, DIR_LOG
-from dot_mngr import DRY_RUN, NB_PROC
+import dot_mngr as dm
 
 from dot_mngr import p, r, Os, Json
 from dot_mngr import a_cmd
@@ -19,19 +17,23 @@ from dot_mngr import default_install
 from dot_mngr import default_uninstall
 from dot_mngr import default_suite
 
+from dot_mngr import pprint
+
 class Package():
 	def __init__(self, name, dir_repo):
 		self.name = name
 		self.dir_repo = dir_repo
 		self.d_base = os.path.join(self.dir_repo, self.name)
-		self.f_meta = os.path.join(self.d_base, FILE_META)
-		self.f_command = os.path.join(self.d_base, FILE_COMMAND)
+		self.f_meta = os.path.join(self.d_base, dm.FILE_META)
+		self.f_command = os.path.join(self.d_base, dm.FILE_COMMAND)
 
 		self.prepared = False
-		self.log_out = os.path.join(DIR_LOG, f"{self.name}.out.log")
-		self.log_err = os.path.join(DIR_LOG, f"{self.name}.err.log")
+		self.log_out = os.path.join(dm.DIR_LOG, f"{self.name}.out.log")
+		self.log_err = os.path.join(dm.DIR_LOG, f"{self.name}.err.log")
 		self.f_log_out = None
 		self.f_log_err = None
+
+		self.chrooted = None
 
 		self.load_meta()
 		self.load_commands()
@@ -57,8 +59,27 @@ class Package():
 		self.dependencies = meta.get("dependencies")
 
 		self.file_name = f"{self.name}-{self.version}{self.suffix}"
-		self.file_path = os.path.join(DIR_CACHE, self.file_name)
+		self.file_path = os.path.join(dm.DIR_CACHE, self.file_name)
 		self.repo_status = None
+
+	def load_env(self):
+		path = "/usr/bin:/usr/sbin"
+		if os.path.exists("/bin") and not os.path.islink("/bin"):
+			path = f"/bin:{path}"
+
+		self.env = {
+			"PATH": path,
+		}
+
+	def add_path(self, path):
+		self.env["PATH"] = f"{path}:{self.env['PATH']}"
+
+	def get_env(self, nb_proc = dm.NB_PROC):
+		self.env["MAKEFLAGS"] = f"-j{nb_proc}"
+		return self.env
+
+	def add_env(self, env: dict):
+		self.env.update(env)
 
 	def load_command(self, cmd_name: str, default_cmd: callable):
 		cmd = getattr(self.tmp_cmd, cmd_name, None)
@@ -86,21 +107,25 @@ class Package():
 		from dot_mngr import conf
 
 		self.get_file()
+		self.load_env()
 		self.prepare_tarball()
 		self.conf = conf
 
-		self.f_log_out = open(self.log_out, "ab")
-		self.f_log_err = open(self.log_err, "ab")
+		self.f_log_out = open(self.log_out, "a")
+		self.f_log_err = open(self.log_err, "a")
 
-		cwd = os.getcwd()
-		if cwd != self.tar_folder:
-			self.oldpwd = cwd
-			os.chdir(self.tar_folder)
+		self.take_tar_folder()
 
 		self.prepared = True
 
-	def prepare_tarball_real(self, dest: str):
-		ftar = tar.open(self.file_path, "r")
+	def take_tar_folder(self):
+		cwd = os.getcwd()
+		if cwd != self.tar_folder:
+			self.oldpwd = cwd
+		os.chdir(self.tar_folder)
+
+	def prepare_tarball_real(self, src: str, dest: str):
+		ftar = tar.open(src, "r")
 		ftar_names = ftar.getnames()
 		have_dir = True
 		if len(ftar_names) > 0:
@@ -110,9 +135,9 @@ class Package():
 					break
 
 			if match:
-				self.tar_folder = os.path.join(DIR_CACHE, match.group(1))
+				self.tar_folder = os.path.join(dm.DIR_CACHE, match.group(1))
 			else:
-				self.tar_folder = os.path.join(DIR_CACHE, self.name)
+				self.tar_folder = os.path.join(dm.DIR_CACHE, self.name)
 				have_dir = False
 
 		if dest is None:
@@ -122,7 +147,7 @@ class Package():
 
 			p.info(f"Extracting {self.name}")
 			if have_dir:
-				ftar.extractall(DIR_CACHE)
+				ftar.extractall(dm.DIR_CACHE)
 			else:
 				ftar.extractall(self.tar_folder)
 			p.success(f"Extracted {self.name}")
@@ -132,19 +157,23 @@ class Package():
 			ftar.extractall(dest)
 			p.success(f"Extracted {self.name} into {dest}")
 
-	def prepare_tarball(self, dest: str = None):
-		if not tar.is_tarfile(self.file_path):
+	def prepare_tarball(self, dest: str = None, chroot: str = None):
+		if chroot is None:
+			chroot = self.chrooted
+		src = self.chrooted_get_path(self.file_path, chroot)
+		if not tar.is_tarfile(src):
 			return
-		if DRY_RUN:
+		if dm.DRY_RUN:
 			if dest is None:
-				self.tar_folder = os.path.join(DIR_CACHE, self.name)
+				self.tar_folder = os.path.join(dm.DIR_CACHE, self.name)
 				dest = self.tar_folder
 
+			dest = self.chrooted_get_path(dest, chroot)
 			Os.mkdir(dest)
 			p.dr(f"Creating {dest}")
 
 		else:
-			self.prepare_tarball_real(dest)
+			self.prepare_tarball_real(src, self.chrooted_get_path(dest, chroot))
 
 	@staticmethod
 	def info_col(
@@ -201,7 +230,7 @@ class Package():
 		self.link = self.new_link
 		self.version = self.new_version if self.new_version else self.version
 		self.file_name = f"{self.name}-{self.version}{self.suffix}"
-		self.file_path = os.path.join(DIR_CACHE, self.file_name)
+		self.file_path = os.path.join(dm.DIR_CACHE, self.file_name)
 		Json.dump({
 			"value": self.value,
 			"type": self.type,
@@ -219,8 +248,10 @@ class Package():
 		self.save_update()
 		self.info()
 
-	def get_file(self):
-		if not os.path.exists(self.file_path):
+	def get_file(self, chroot = None):
+		if chroot is None:
+			chroot = self.chrooted
+		if not os.path.exists(self.chrooted_get_path(self.file_path, chroot)):
 			if not url_handler.download_package(self):
 				return False
 			else:
@@ -229,61 +260,115 @@ class Package():
 		return True
 
 	def cmd_run_real(self, cmd: str, nb_proc: int):
-		def p_out(stream):
-			out = stream.readline()
-			if out:
-				self.f_log_out.write(out)
-				try:
-					p.cmdo(out.decode("utf-8").strip("\n"))
-				except UnicodeDecodeError as e:
-					p.warn("Cannot decode output")
+		def p_out(line):
+			self.f_log_out.write(line)
+			p.cmdo(line.strip("\n"))
 
-		def p_err(stream):
-			err = stream.readline()
-			if err:
-				self.f_log_err.write(err)
-				try:
-					p.cmde(err.decode("utf-8").strip("\n"))
-				except UnicodeDecodeError as e:
-					p.warn("Cannot decode output")
+		def p_err(line):
+			self.f_log_err.write(line)
+			p.cmde(line.strip("\n"))
 
 		proc = subprocess.Popen(cmd,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.PIPE,
-			env=Os.get_env(nb_proc),
+			env=self.get_env(nb_proc),
+			universal_newlines=True,
 			shell=True,
 			close_fds=True,
 		)
 
-		sel = selectors.DefaultSelector()
-		sel.register(proc.stdout, selectors.EVENT_READ, p_out)
-		sel.register(proc.stderr, selectors.EVENT_READ, p_err)
+		os.set_blocking(proc.stdout.fileno(), False)
+		os.set_blocking(proc.stderr.fileno(), False)
 
-		while proc.poll() is None:
-			events = sel.select()
-			for key, mask in events:
-				callback = key.data
-				callback(key.fileobj)
+		while True:
+			line_out = proc.stdout.readline()
+			line_err = proc.stderr.readline()
+			line_out_empty = line_out == ''
+			line_err_empty = line_err == ''
+			if line_out_empty and line_err_empty and proc.poll() is not None:
+				break
+			if not line_out_empty:
+				p_out(line_out)
+			if not line_err_empty:
+				p_err(line_err)
 
-		retv = proc.wait()
-		sel.close()
+		proc.wait()
+		retv = proc.returncode
 
 		if retv != 0:
-			p.fail(f"Command failed:\n[{cmd}]({retv})")
+			p.fail(f"Command failed:\n({retv})[{cmd}]")
 
 		return retv
 
-	def cmd_run(self, cmd: str, nb_proc: int = NB_PROC):
-		if DRY_RUN:
+	def cmd_run(self, cmd: str, nb_proc: int = dm.NB_PROC):
+		if dm.DRY_RUN:
 			p.dr(cmd)
 		else:
 			return self.cmd_run_real(cmd, nb_proc)
 
-	def apply_patch(self, name, opt):
+	def chrooted_get_path(self, path, chroot = None):
+		if chroot is None:
+			chroot = self.chrooted
+		if chroot:
+			if path.startswith(chroot):
+				return path.removeprefix(chroot)
+		return path
+
+	def patch_get_path(self, name, chroot = None):
+		if chroot is None:
+			chroot = self.chrooted
+		path = self.chrooted_get_path(self.tar_folder, chroot)
+		return os.path.join(path, f"{name}.patch")
+
+	def download_patch(self, name, path = None):
 		url = self.patchs[name]
-		path = os.path.join(self.tar_folder, name)
+		if path is None:
+			path = self.patch_get_path(name)
+		if os.path.exists(path):
+			return
 		url_handler.download_file(url, path)
+
+	def apply_patch(self, name, opt):
+		# TODO:
+		# 	- Check if patch is already downloaded
+		path = self.patch_get_path(name)
+		self.download_patch(name, path)
 		self.cmd_run(f"patch {opt} -i {path}")
 
 	def take_build(self):
-		Os.take(os.path.join(self.tar_folder, "build"))
+		path = os.path.join(self.tar_folder, "build")
+		if not self.chrooted is None:
+			path = path.replace(self.chrooted, "")
+		Os.take(path)
+
+	def chroot(self, dest: str = None):
+		self.real_root = os.open("/", os.O_RDONLY)
+
+		if dest is None:
+			dest = dm.PREFIX
+
+		os.chroot(dest)
+		os.chdir(".")
+		self.chrooted = dest
+
+	def unchroot(self):
+		os.fchdir(self.real_root)
+		os.chroot(".")
+		os.close(self.real_root)
+		if self.oldpwd:
+			os.chdir(self.oldpwd)
+		else:
+			os.chdir(".")
+		self.chrooted = None
+
+	def copy(self, file_name: str, dest_path: str):
+		file_path = os.path.join(self.tar_folder, file_name)
+		copy_func = None
+		if not os.path.exists(file_path):
+			p.fail(f"File not found: {file_name}")
+		elif os.path.isdir(file_path):
+			copy_func = shutil.copytree
+		else:
+			copy_func = shutil.copy2
+
+		copy_func(file_path, dest_path)

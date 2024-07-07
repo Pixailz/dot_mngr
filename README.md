@@ -36,6 +36,8 @@ here is a default
 
 ## TODO
 
+1. Some package use the same tarball but have different command.py file,
+   disasociate package name from tarball name
 1. test if repo implementation is good
   1. might break in some edge cases
 1. the doc

@@ -23,7 +23,7 @@ def dependencies_get(pack):
 	to_install = list()
 	package = conf.packages[pack]
 
-	if package.dependencies:
+	if not getattr(package, "dependencies", None) is None:
 		if package.dependencies.get("required"):
 			for pak in package.dependencies["required"]:
 				if pak in conf.packages:
@@ -184,17 +184,23 @@ def get_package_from_name(package_name: str):
 		return
 	return package
 
+def download_package(self, package_name: str):
+	package = get_package_from_name(package_name)
+	if package is None:
+		return
+	package.get_file(self.chrooted)
+
 def extract_file_from_package(
 		package_name: str,
 		dest: str = None,
+		chroot = None,
 	):
 	package = get_package_from_name(package_name)
 	if package is None:
 		return
 
-	package.get_file()
-	print(os.getcwd())
-	package.prepare_tarball(dest)
+	package.get_file(chroot)
+	package.prepare_tarball(dest, chroot)
 
 def get_version_from_package(
 		package_name: str

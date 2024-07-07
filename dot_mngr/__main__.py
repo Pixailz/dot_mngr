@@ -6,6 +6,10 @@ def	main():
 
 	if DEBUG:
 		print(f"{PREFIX            = }")
+		print(f"{DIR_BASE          = }")
+		print(f"{DIR_CONFIG        = }")
+		print(f"{DIR_REPO          = }")
+		print(f"{DIR_CACHE         = }")
 		print(f"{DRY_RUN           = }")
 		print(f"{WRITE_HTML        = }")
 		print(f"{DO_CHECK          = }")
@@ -24,8 +28,8 @@ def	main():
 	p.info("end")
 
 if __name__ == "__main__":
-	try:
-		main()
-	except Exception as e:
-		p.fail(e)
-		sys.exit(1)
+	# try:
+	main()
+	# except Exception as e:
+	# 	p.fail(e)
+	# 	sys.exit(1)
