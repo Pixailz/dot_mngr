@@ -306,10 +306,10 @@ class Package():
 		else:
 			return self.cmd_run_real(cmd, nb_proc)
 
-	def chrooted_get_path(self, path, chroot = None):
+	def chrooted_get_path(self, path = None, chroot = None):
 		if chroot is None:
 			chroot = self.chrooted
-		if chroot:
+		if chroot and not path is None:
 			if path.startswith(chroot):
 				return path.removeprefix(chroot)
 		return path

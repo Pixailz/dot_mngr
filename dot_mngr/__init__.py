@@ -163,4 +163,5 @@ from	.repository				import Repository
 from 	.config					import conf
 from	.config					import extract_file_from_package
 from	.config					import get_version_from_package
+from	.config					import get_package_from_name
 from	.config					import download_package
