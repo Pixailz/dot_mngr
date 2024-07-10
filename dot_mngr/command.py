@@ -2,7 +2,7 @@ from dot_mngr import os
 from dot_mngr import sys
 from dot_mngr import shutil
 
-from dot_mngr import DO_CHECK, DRY_RUN
+import dot_mngr as dm
 
 from dot_mngr import p
 
@@ -24,7 +24,7 @@ def default_uninstall(self):
 def default_suite(self):
 	self.cmd["configure"]()
 	self.cmd["compile"]()
-	if DO_CHECK:
+	if dm.DO_CHECK:
 		self.cmd["check"]()
 	self.cmd["install"]()
 
@@ -36,7 +36,7 @@ def default_suite(self):
 
 def a_cmd(self, func, title = None):
 	def wrapper():
-		if title and not DRY_RUN:
+		if title and not dm.DRY_RUN:
 			p.info(f"Running {title} for {self.name}-{self.version}")
 		if not self.prepared:
 			self.prepare()
