@@ -19,13 +19,28 @@ from dot_mngr import default_suite
 
 from dot_mngr import pprint
 
+from dot_mngr import REPO_SEP
+
+# Package Type
+TPACK_UNKNOWN = 0
+TPACK_META = 1
+TPACK_META_REF = 2
+TPACK_COMMAND = 4
+
+def get_real_name(pack_name: str):
+	splitted = pack_name.split(dm.REPO_SEP)
+	return splitted[1] if len(splitted) == 2 else splitted[0]
+
 class Package():
 	def __init__(self, name, dir_repo):
-		self.name = name
+		self.real_name = name
+		self.name = get_real_name(self.real_name)
 		self.dir_repo = dir_repo
-		self.d_base = os.path.join(self.dir_repo, self.name)
+		self.d_base = os.path.join(self.dir_repo, get_real_name(self.name))
 		self.f_meta = os.path.join(self.d_base, dm.FILE_META)
 		self.f_command = os.path.join(self.d_base, dm.FILE_COMMAND)
+
+		self.status = TPACK_UNKNOWN
 
 		self.prepared = False
 		self.log_out = os.path.join(dm.DIR_LOG, f"{self.name}.out.log")
@@ -35,7 +50,7 @@ class Package():
 
 		self.chrooted = None
 
-		self.load_meta()
+		self.load_metas()
 		self.load_commands()
 
 	def __del__(self):
@@ -44,10 +59,53 @@ class Package():
 		if self.f_log_err and not self.f_log_err.closed:
 			self.f_log_err.close()
 
-	def load_meta(self):
+	def set_meta_ref(self, key):
+		self_value = getattr(self, key, None)
+		if self_value is None:
+			setattr(self, key, getattr(self.reference_pack, key, None))
+
+	def load_metas_ref(self):
+		splitted = self.reference.split(dm.REPO_SEP)
+		repos = list()
+		if len(splitted) == 2:
+			if splitted[0] not in dm.conf.repository:
+				p.fail(f"Unknown repository: {splitted[0]}")
+			else:
+				repos = [dm.conf.repository[splitted[0]]]
+				splitted[0] = splitted[1]
+		else:
+			repos = dm.conf.repository
+
+		self.reference_pack = None
+		for repo in repos:
+			for k, v in repo.packages.items():
+				if k == splitted[0]:
+					self.reference_pack = v
+		if self.reference_pack is None:
+			p.fail(f"Unknown package: {splitted[0]}")
+
+		self.set_meta_ref("value")
+		self.set_meta_ref("type")
+		self.set_meta_ref("prefix")
+		self.set_meta_ref("suffix")
+		self.set_meta_ref("link")
+		self.set_meta_ref("version")
+		self.set_meta_ref("patchs")
+		self.set_meta_ref("files")
+		self.set_meta_ref("dependencies")
+
+		self.file_name = self.reference_pack.file_name
+		self.file_path = self.reference_pack.file_path
+
+	def load_metas(self):
 		meta = Json.load(self.f_meta)
 		if not meta:
 			return None
+		self.status = TPACK_META
+		self.reference = meta.get("reference")
+		if self.reference:
+			self.status = TPACK_META_REF
+
 		self.value = meta.get("value")
 		self.type = meta.get("type")
 		self.prefix = meta.get("prefix")
@@ -60,6 +118,7 @@ class Package():
 
 		self.file_name = f"{self.name}-{self.version}{self.suffix}"
 		self.file_path = os.path.join(dm.DIR_CACHE, self.file_name)
+
 		self.repo_status = None
 
 	def load_env(self):
@@ -179,19 +238,19 @@ class Package():
 	def info_col(
 			name,
 			status,
-			version = "None",
-			link = "None"
+			version,
+			reference,
 		):
 		return p.col([
 			(name, 20),
 			(version, 15),
 			(status, 15),
-			(link, 30),
+			(reference, 15),
 		])
 
 	@staticmethod
 	def hdr_info():
-		p.title(Package.info_col("Name","Status", "Version", "Link") + "\n")
+		p.title(Package.info_col("Name","Status", "Version", "reference") + "\n")
 
 	def info(self):
 		pfunc = p.info
@@ -204,7 +263,9 @@ class Package():
 		elif self.repo_status == 2:
 			status = "Up-to-date"
 
-		pfunc(Package.info_col(self.name, status, self.version, self.link))
+		if pfunc is not p.fail and self.reference:
+			pfunc = p.warn
+		pfunc(Package.info_col(self.name, status, self.version, self.reference))
 
 		# if self.dependencies:
 		# 	p.title(f"  - Dependencies:")

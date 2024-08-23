@@ -116,6 +116,14 @@ class Parsing():
 			dest="upda_write_html",
 		)
 
+		update.add_argument(
+			"update_package",
+			type=str,
+			nargs="*",
+			default=[],
+			help="the package to update",
+		)
+
 	def add_command_install(self):
 		install = self.subparsers.add_parser(
 			"install",

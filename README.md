@@ -31,17 +31,19 @@ here is a default
 	# OUT
 	"link":			""
 	"version":		""
+
+	# OTHER
+	"patchs": null,
+	"files": null,
+	"dependencies": null
 }
 ```
 
 ## TODO
 
-1. Some package use the same tarball but have different command.py file,
-   disasociate package name from tarball name
-1. test if repo implementation is good
-  1. might break in some edge cases
+1. check if package is already installed
+1. reference of reference not working
 1. the doc
-1. test suite
 1. workflows to update repo:
   1. split repo folder into githubs, referencing package as needed, provide
   with template, actions can update repo

@@ -7,10 +7,29 @@ from dot_mngr import Json, Os, Package, Parsing, Repository
 from dot_mngr import RepoError
 
 from dot_mngr import DIR_CONFIG, DIR_RSC, DIR_REPO, DIR_CACHE, DIR_LOG
-from dot_mngr import FILE_META, PREFIX, NB_PROC
+from dot_mngr import FILE_META, PREFIX, NB_PROC, REPO_SEP
 
 from dot_mngr import sys
+
 from dot_mngr import pprint
+from dot_mngr import get_real_name
+
+def uniq_list_deps(lst):
+	new_list = list()
+	item_dic = dict()
+	for i in lst:
+		if i not in item_dic:
+			item_dic[i] = 1
+		else:
+			item_dic[i] += 1
+
+	for i in lst:
+		if item_dic[i] == 1:
+			new_list.append(i)
+		else:
+			item_dic[i] -= 1
+
+	return new_list
 
 def uniq_list(lst):
 	new_list = list()
@@ -18,47 +37,6 @@ def uniq_list(lst):
 		if item not in new_list:
 			new_list.append(item)
 	return new_list
-
-def dependencies_get(pack):
-	to_install = list()
-	package = conf.packages[pack]
-
-	if not getattr(package, "dependencies", None) is None:
-		if package.dependencies.get("required"):
-			for pak in package.dependencies["required"]:
-				if pak in conf.packages:
-					to_install.append(pak)
-		# if package.dependencies.get("optional"):
-		#	to_install += pass
-	return to_install
-
-def is_installed(pack):
-	if pack.files == None:
-		return False
-	for file in pack.files:
-		if file[0] == "/":
-			file = file[1:]
-		# print(os.path.join(PREFIX, file))
-
-		if not os.path.exists(os.path.join(PREFIX, file)):
-			return False
-	return True
-
-def dependencies_get_all(target):
-	to_install = dependencies_get(target.name)
-	prev_len = len(to_install)
-
-	while True:
-		tmp_to_install = list()
-		for pack in to_install:
-			tmp_to_install += dependencies_get(pack)
-		to_install = uniq_list(to_install + tmp_to_install)
-		cur_len = len(to_install)
-		if prev_len == cur_len:
-			break
-		else:
-			prev_len = cur_len
-	return to_install
 
 def dependencies_get_not_installed(to_install):
 	new_to_install = list()
@@ -68,13 +46,15 @@ def dependencies_get_not_installed(to_install):
 
 	return to_install
 
-	# sys.exit(130)
-	# for i in to_install:
-	# 	if not self.conf.packages.get(i):
-	# 		p.warn(f"Dependency {i} not found")
-	# 		continue
-
-	# 	self.conf.packages[i].cmd["suite"]()
+def is_installed(pack):
+	if pack.files == None:
+		return False
+	for file in pack.files:
+		if file[0] == "/":
+			file = file[1:]
+		if not os.path.exists(os.path.join(PREFIX, file)):
+			return False
+	return True
 
 class Config():
 	# INIT
@@ -103,7 +83,6 @@ class Config():
 
 	def load_meta(self):
 		meta = Json.load(os.path.join(DIR_REPO, FILE_META))
-
 		if not meta:
 			meta = dict()
 		self.last_checked = meta.get("last_checked")
@@ -111,25 +90,84 @@ class Config():
 
 	def load_repository(self):
 		with open(os.path.join(DIR_CONFIG, "sources.list")) as f:
-			sources = f.read().splitlines()
+			sources = [ i.split(" ") for i in f.read().splitlines() ]
 
 		self.repository = dict()
 
 		for source in sources:
 			self.repository[source[0]] = Repository(source)
 
-		self.packages = dict()
-
 		for repo in self.repository.values():
 			for k, v in repo.packages.items():
-				self.packages[k] = v
+				if getattr(v, "reference", None) is not None:
+					v.load_metas_ref()
 
 	# UPDATE
 	def update_repo(self):
+		to_update = copy.deepcopy(getattr(self.parsing.args, "update_package", None))
 		for repo in self.repository.values():
-			repo.update(self.parsing.args.glob_no_thread)
+			repo.update(self.parsing.args.glob_no_thread, to_update)
 
 	# INSTALL
+
+	## DEPENDENCIES
+
+	def __get_package(self, pack_name):
+		splitted = pack_name.split(REPO_SEP)
+		repos = None
+
+		if len(splitted) == 2:
+			if splitted[0] not in self.repository:
+				p.fail(f"Repository {splitted[0]} not found")
+			repos = self.repository[splitted[0]]
+			splitted[0] = splitted[1]
+		else:
+			repos = self.repository
+		return splitted[0], repos
+
+	def get_package(self, pack_name):
+		pack_name, repos = self.__get_package(pack_name)
+
+		for k, v in repos.items():
+			pack = v.packages.get(pack_name, None)
+			if pack is not None:
+				return pack
+		return None
+
+	def is_in_packages(self, pack_name):
+		pack_name, repos = self.__get_package(pack_name)
+
+		for k, v in repos.items():
+			if pack_name in v.packages:
+				return True
+		return False
+
+	def dependencies_get(self, pack):
+		to_install = list()
+		if not getattr(pack, "dependencies", None) is None:
+			if pack.dependencies.get("required"):
+				for pak in pack.dependencies["required"]:
+					if self.is_in_packages(pak):
+						to_install.append(pak)
+		return to_install
+
+	def dependencies_get_all(self, pack):
+		i = 1
+		to_install = [pack]
+		prev_len = len(to_install)
+		while i:
+			tmp_to_install = list()
+			for p in to_install:
+				tmp_to_install += self.dependencies_get(self.get_package(p))
+			to_install = uniq_list_deps(to_install + tmp_to_install)
+
+			new_len = len(to_install)
+			if prev_len == new_len:
+				break
+			prev_len = new_len
+			i += 1
+		return to_install
+
 	def install_package(self):
 		to_install = copy.deepcopy(getattr(self.parsing.args, "inst_package", None))
 
@@ -137,22 +175,19 @@ class Config():
 			p.fail("No package to install")
 
 		for pack in self.parsing.args.inst_package:
-			if pack not in self.packages:
+			if	not self.is_in_packages(pack) and \
+				not self.is_in_packages(get_real_name(pack)):
 				p.fail(f"Package {pack} not found")
-			to_install.append(pack)
 
 		tmp_to_install = list()
 		for pack in to_install:
-			tmp_to_install += dependencies_get_all(self.packages[pack])
+			tmp_to_install += self.dependencies_get_all(get_real_name(pack))
 
-		to_install = uniq_list(
-			dependencies_get_not_installed(to_install + tmp_to_install)
-		)
+		to_install = tmp_to_install
+		to_install.reverse()
 
-		# Now that we have the list of packages and dependencies, in this order
-		# we can install them, in reverse so dependencies are installed first
-		for pack in sorted(to_install, reverse=True):
-			self.packages[pack].cmd["suite"]()
+		for pack in to_install:
+			self.get_package(pack).cmd["suite"]()
 
 	# INFO
 	def print_last_checked(self):
@@ -166,13 +201,17 @@ class Config():
 
 	def info_package(self):
 		self.print_last_checked()
+		to_get_info = copy.deepcopy(getattr(self.parsing.args, "info_package", None))
 		Package.hdr_info()
 		for repo in self.repository.values():
 			p.set_lvl(0)
 			p.title(repo.name)
 			p.set_lvl(1)
 			for package in repo.packages.values():
-				package.info()
+				if not to_get_info or (
+					package.name in to_get_info or package.real_name in to_get_info
+				):
+					package.info()
 			print()
 
 conf = Config()

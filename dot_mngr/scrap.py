@@ -94,10 +94,10 @@ class Scrap():
 			date = r.href_date(scrap, html)
 			if len(date) > 0:
 				if len(date[0][0]) > 0:
-					ts = int(datetime.strptime(date[0][0], "%d-%b-%Y %H:%M").timestamp())
+					ts = int(datetime.datetime.strptime(date[0][0], "%d-%b-%Y %H:%M").timestamp())
 					result[ts] = scrap
 				elif len(date[0][1]) > 0:
-					ts = int(datetime.strptime(date[0][1], "%Y-%b-%d %H:%M:%S").timestamp())
+					ts = int(datetime.datetime.strptime(date[0][1], "%Y-%b-%d %H:%M:%S").timestamp())
 					result[ts] = scrap
 
 		new_url = None

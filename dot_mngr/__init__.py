@@ -99,27 +99,10 @@ try:
 except FileNotFoundError as e:
 	pass
 
-# TODO Check why package downloader fail to properly pad, with those package
-# PACKAGES = [
-# 	"acl",
-# 	"flit-core",
-# 	"e2fsprogs",
-# 	"lfs-bootscripts",
-# 	"libcap",
-# 	"make-ca",
-# 	"markup-safe",
-# 	"ncurses",
-# 	"pkgconf",
-# 	"systemd",
-# 	"sysvinit",
-# 	"vim",
-# 	"wheel",
-# 	"xml-parser",
-# 	"udev-lfs",
-# ]
+# KERNEL
+from 	.kernel					import Kernel
 
 # EXCEPTION
-
 from	.exception				import RepoError
 
 # UTILS
@@ -153,8 +136,10 @@ from 	.command				import default_uninstall
 from 	.command				import default_suite
 from 	.command				import a_cmd
 
+REPO_SEP = "@"
 # PACKAGE
 from	.package				import Package
+from	.package				import get_real_name
 
 # REPOSITORY
 from	.repository				import Repository

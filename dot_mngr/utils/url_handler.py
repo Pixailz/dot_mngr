@@ -2,6 +2,7 @@ from dot_mngr import urllib
 from dot_mngr import WRITE_HTML
 from dot_mngr import ProgressBar
 from dot_mngr import p
+from dot_mngr import gzip
 
 def req_decode(resp):
 	if resp.info().get("Content-Encoding") == "gzip":
