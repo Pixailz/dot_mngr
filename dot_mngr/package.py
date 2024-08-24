@@ -240,17 +240,19 @@ class Package():
 			status,
 			version,
 			reference,
+			link
 		):
 		return p.col([
 			(name, 20),
 			(version, 15),
 			(status, 15),
 			(reference, 15),
+			(link, 50),
 		])
 
 	@staticmethod
 	def hdr_info():
-		p.title(Package.info_col("Name","Status", "Version", "reference") + "\n")
+		p.title(Package.info_col("Name","Status", "Version", "reference", "link") + "\n")
 
 	def info(self):
 		pfunc = p.info
@@ -265,7 +267,7 @@ class Package():
 
 		if pfunc is not p.fail and self.reference:
 			pfunc = p.warn
-		pfunc(Package.info_col(self.name, status, self.version, self.reference))
+		pfunc(Package.info_col(self.name, status, self.version, self.reference, self.link))
 
 		# if self.dependencies:
 		# 	p.title(f"  - Dependencies:")
@@ -305,8 +307,9 @@ class Package():
 		}, self.f_meta)
 
 	def update(self):
-		self.new_link, self.new_version = scrap.latest_link(self)
-		self.save_update()
+		if not self.reference:
+			self.new_link, self.new_version = scrap.latest_link(self)
+			self.save_update()
 		self.info()
 
 	def get_file(self, chroot = None):

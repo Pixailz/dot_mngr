@@ -217,10 +217,9 @@ class Config():
 conf = Config()
 
 def get_package_from_name(package_name: str):
-	package = conf.packages.get(package_name, None)
+	package = conf.get_package(package_name)
 	if package is None:
 		p.fail(f"Package {package_name} not found")
-		return
 	return package
 
 def download_package(self, package_name: str):

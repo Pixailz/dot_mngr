@@ -102,6 +102,8 @@ class Scrap():
 
 		new_url = None
 		for k, v in sorted(result.items(), reverse=True):
+			if package.value.endswith("/"):
+				package.value = package.value.removesuffix("/")
 			new_url = f"{package.value}/{v}"
 			break
 
