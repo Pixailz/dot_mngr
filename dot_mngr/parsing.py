@@ -2,6 +2,7 @@ from dot_mngr import os
 from dot_mngr import argparse
 
 from dot_mngr import a
+from dot_mngr import Check
 from dot_mngr import METADATA as MD
 import dot_mngr as dm
 
@@ -53,10 +54,18 @@ class Parsing():
 		)
 
 		self.parser.add_argument(
-			"--use-prefix", "-p",
+			"--prefix", "-p",
 			type=str,
 			help="set PREFIX to the given value",
-			dest="glob_use_prefix",
+			dest="glob_prefix",
+			metavar=a.HM_PATH,
+		)
+
+		self.parser.add_argument(
+			"--root-path", "-P",
+			type=str,
+			help="set ROOT_PATH to the given value",
+			dest="glob_root_path",
 			metavar=a.HM_PATH,
 		)
 
@@ -134,7 +143,6 @@ class Parsing():
 			"--disable-check",
 			action="store_false",
 			help="disable the check step for installation",
-			default=True,
 			dest="inst_disable_check",
 		)
 
@@ -142,8 +150,14 @@ class Parsing():
 			"--extract-folder", "-X",
 			type=str,
 			help="set the folder to extract the package",
-			default=dm.DIR_CACHE,
 			dest="inst_extract_folder",
+		)
+
+		install.add_argument(
+			"--force-install", "-F",
+			type=bool,
+			help="force installation of already installed packages",
+			dest="inst_force_install",
 		)
 
 		install.add_argument(
@@ -165,8 +179,21 @@ class Parsing():
 			help="the package to get information about",
 		)
 
+	# UTILS
+	def get_default(self, k_env, k_get, default):
+		env = os.getenv(k_env, None)
+		get = getattr(self.args, k_get, None)
+		if get is not None:
+			return get
+		elif env is not None:
+			return env
+		else:
+			return default
+
+	# POST PARSING
 	def post_parse(self):
 		self.post_parse_prefix()
+		self.post_parse_root_path()
 		self.post_parse_dry_run()
 		self.post_parse_no_ansi()
 		self.post_parse_nproc()
@@ -177,11 +204,11 @@ class Parsing():
 		self.post_parse_update()
 
 	def post_parse_prefix(self):
-		use_prefix = getattr(self.args, "glob_use_prefix", None)
-		use_home_dir = getattr(self.args, "glob_use_home", None)
+		prefix = self.get_default("PREFIX", "glob_prefix", dm.PREFIX)
+		use_home_dir = self.get_default("USE_HOME", "glob_use_home", None)
 
-		if use_prefix:
-			dm.PREFIX = use_prefix
+		if prefix:
+			dm.PREFIX = prefix
 		elif use_home_dir:
 			env = os.environ
 			if env.get("XDG_DATA_HOME", None):
@@ -189,23 +216,30 @@ class Parsing():
 			else:
 				dm.PREFIX = f"{env['HOME']}/.local"
 
+	def post_parse_root_path(self):
+		dm.ROOT_PATH = self.get_default(
+			"ROOT_PATH", "glob_root_path", dm.ROOT_PATH
+		)
+
 	def post_parse_dry_run(self):
-		dm.DRY_RUN = getattr(self.args, "glob_dry_run", dm.DRY_RUN)
+		dm.DRY_RUN = self.get_default("DRY_RUN", "glob_dry_run", dm.DRY_RUN)
 
 	def post_parse_no_ansi(self):
-		if getattr(self.args, "glob_no_ansi", False):
+		if self.get_default("NO_ANSI", "glob_no_ansi", False):
 			a.remove_ansi()
 
 	def post_parse_nproc(self):
-		tmp  = getattr(self.args, "glob_nproc", -1)
+		tmp = self.get_default("NB_PROC", "glob_nproc", -1)
 
 		if tmp > 0 and tmp < dm.NB_PROC:
 			dm.NB_PROC = tmp
 
 	def post_parse_triplet(self):
-		tmp = getattr(self.args, "glob_target_triplet", None)
+		tmp = self.get_default(
+			"TARGET_TRIPLET", "glob_target_triplet", dm.TARGET_TRIPLET
+		)
 
-		if not tmp is None:
+		if tmp is not None:
 			dm.TARGET_TRIPLET = tmp
 
 		triplet = dm.TARGET_TRIPLET.split("-")
@@ -215,16 +249,36 @@ class Parsing():
 		self.post_parse_update_write_html()
 
 	def post_parse_update_write_html(self):
-		dm.WRITE_HTML = getattr(self.args, "upda_write_html", dm.WRITE_HTML)
+		dm.WRITE_HTML = self.get_default(
+			"WRITE_HTML", "upda_write_html", dm.WRITE_HTML
+		)
 
 	def post_parse_install(self):
 		self.post_parse_install_disable_check()
 		self.post_parse_install_extract_folder()
+		self.post_parse_install_force_install()
 
 	def post_parse_install_disable_check(self):
-		dm.DO_CHECK = getattr(self.args, "inst_disable_check", dm.DO_CHECK)
+		dm.DO_CHECK =self.get_default(
+			"DO_CHECK", "inst_disable_check", dm.DO_CHECK
+		)
+		if Check.IsFalse(dm.DO_CHECK):
+			dm.DO_CHECK = False
+		else:
+			dm.DO_CHECK = True
 
 	def post_parse_install_extract_folder(self):
-		tmp = getattr(self.args, "inst_extract_folder", None)
-		if not tmp is None:
+		tmp = self.get_default(
+			"EXTRACT_FOLDER", "inst_extract_folder", dm.DIR_CACHE
+		)
+		if tmp is not None:
 			dm.DIR_CACHE = tmp
+
+	def post_parse_install_force_install(self):
+		dm.FORCE_INSTALL = self.get_default(
+			"FORCE_INSTALL", "inst_force_install", dm.FORCE_INSTALL
+		)
+		if Check.IsFalse(dm.FORCE_INSTALL):
+			dm.FORCE_INSTALL = False
+		else:
+			dm.FORCE_INSTALL = True

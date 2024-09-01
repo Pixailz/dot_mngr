@@ -93,5 +93,11 @@ class	Print():
 			string += tmp.ljust(c[1] - 1) + " "
 		return string
 
+	def ref(
+			self,
+			string: str,
+		):
+		self.print(string, a.P_REF)
+
 
 _print = Print()

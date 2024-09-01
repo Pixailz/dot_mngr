@@ -36,6 +36,7 @@ DEBUG			= True
 ## GLOBAL
 DRY_RUN			= False
 PREFIX			= "/usr"
+ROOT_PATH		= ""
 NB_PROC			= os.cpu_count()
 
 ## UPDATE
@@ -43,7 +44,8 @@ WRITE_HTML		= False
 
 ## INSTALL
 DO_CHECK		= True
-DO_CHROOT		= False # TODO Implement chroot
+DO_CHROOT		= False
+FORCE_INSTALL	= False
 
 TARGET_TRIPLET	= subprocess.run(
 	"/bin/gcc -dumpmachine",
@@ -89,6 +91,12 @@ def	shrink_path(path: str):
 
 ENV = dict()
 
+PATH = os.getenv("PATH")
+if PATH is None:
+	PATH = ["/bin", "/sbin"]
+else:
+	PATH = PATH.split(":")
+
 try:
 	with open(ENV_FILE, 'r') as f:
 		config_string = '[s]\n' + f.read()
@@ -98,6 +106,11 @@ try:
 	ENV = env["s"]
 except FileNotFoundError as e:
 	pass
+
+# CTYPE
+from	.utils.ctype			import CTYPE
+# Check
+from	.utils.check.main		import Check
 
 # KERNEL
 from 	.kernel					import Kernel
@@ -128,6 +141,10 @@ from 	.parsing				import Parsing
 from 	.scrap					import scrap
 
 # COMMAND
+from	.command_kernel			import default_kernel_configure_kernel
+from	.command_kernel			import default_kernel_configure
+from	.command_kernel			import default_kernel_compile
+from	.command_kernel			import default_kernel_install
 from 	.command				import default_configure
 from 	.command				import default_compile
 from 	.command				import default_check

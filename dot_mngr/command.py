@@ -1,5 +1,4 @@
 from dot_mngr import os
-from dot_mngr import sys
 from dot_mngr import shutil
 
 import dot_mngr as dm
@@ -22,11 +21,25 @@ def default_uninstall(self):
 	p.warn(f"Uninstall command not found for {self.name}")
 
 def default_suite(self):
+	if not os.path.exists("configure") and os.path.exists("autogen.sh"):
+		self.cmd_run("sh autogen.sh")
+
 	self.cmd["configure"]()
-	self.cmd["compile"]()
+	configure_kernel = self.cmd.get("configure_kernel", None)
+	if configure_kernel is not None:
+		configure_kernel()
+	do_compile = configure_kernel is None or self.name == "linux-compile"
+
+	if do_compile:
+		self.cmd["compile"]()
+
 	if dm.DO_CHECK:
 		self.cmd["check"]()
-	self.cmd["install"]()
+
+	if do_compile:
+		self.cmd["install"]()
+	else:
+		self.cmd_run(f"cp -fv .config /boot/config-{self.version}")
 
 	if self.chrooted:
 		self.unchroot()

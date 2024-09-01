@@ -1,4 +1,5 @@
 from dot_mngr import os
+from dot_mngr import sys
 from dot_mngr import tar
 from dot_mngr import shutil
 from dot_mngr import importlib
@@ -10,12 +11,21 @@ from dot_mngr import p, r, Os, Json
 from dot_mngr import a_cmd
 from dot_mngr import scrap
 from dot_mngr import url_handler
+
+# PROFILE
+## DEFAULT
 from dot_mngr import default_configure
 from dot_mngr import default_compile
 from dot_mngr import default_check
 from dot_mngr import default_install
 from dot_mngr import default_uninstall
 from dot_mngr import default_suite
+
+## KERNEL
+from dot_mngr import default_kernel_configure
+from dot_mngr import default_kernel_configure_kernel
+from dot_mngr import default_kernel_compile
+from dot_mngr import default_kernel_install
 
 from dot_mngr import pprint
 
@@ -142,10 +152,38 @@ class Package():
 
 	def load_command(self, cmd_name: str, default_cmd: callable):
 		cmd = getattr(self.tmp_cmd, cmd_name, None)
-		if cmd:
+		if cmd is not None:
 			self.cmd[cmd_name] = a_cmd(self, cmd, cmd_name)
 		else:
 			self.cmd[cmd_name] = a_cmd(self, default_cmd)
+
+	CMD_PROFILE = {
+		"default": {
+			"configure": default_configure,
+			"compile": default_compile,
+			"check": default_check,
+			"install": default_install,
+			"uninstall": default_uninstall,
+			"suite": default_suite,
+		},
+		"kernel": {
+			"configure": default_kernel_configure,
+			"configure_kernel": default_kernel_configure_kernel,
+			"compile": default_kernel_compile,
+			"check": default_check,
+			"install": default_kernel_install,
+			"uninstall": default_uninstall,
+			"suite": default_suite,
+		}
+	}
+
+	def load_commands_profile(self, profile):
+		cmd = Package.CMD_PROFILE.get(profile, None)
+		if cmd is None:
+			p.fail(f"Profile {profile} not found")
+
+		for k, v in cmd.items():
+			self.load_command(k, v)
 
 	def load_commands(self):
 		self.cmd = dict()
@@ -155,23 +193,20 @@ class Package():
 			self.tmp_cmd = importlib.util.module_from_spec(spec)
 			spec.loader.exec_module(self.tmp_cmd)
 
-		self.load_command("configure",	default_configure)
-		self.load_command("compile", 	default_compile)
-		self.load_command("check",		default_check)
-		self.load_command("install",	default_install)
-		self.load_command("uninstall",	default_uninstall)
-		self.load_command("suite",		default_suite)
+		configure_kernel = getattr(self.tmp_cmd, "configure_kernel", None)
+		if configure_kernel is not None:
+			self.cmd["configure_kernel"] = configure_kernel
+			self.load_commands_profile("kernel")
+		else:
+			self.load_commands_profile("default")
 
 	def prepare(self):
-		from dot_mngr import conf
-
 		self.get_file()
 		self.load_env()
 		self.prepare_tarball()
-		self.conf = conf
 
-		self.f_log_out = open(self.log_out, "a")
-		self.f_log_err = open(self.log_err, "a")
+		self.f_log_out = open(self.log_out, "w")
+		self.f_log_err = open(self.log_err, "w")
 
 		self.take_tar_folder()
 
@@ -222,6 +257,8 @@ class Package():
 		src = self.chrooted_get_path(self.file_path, chroot)
 		if not tar.is_tarfile(src):
 			return
+		if dest is None:
+			dest = dm.DIR_CACHE
 		if dm.DRY_RUN:
 			if dest is None:
 				self.tar_folder = os.path.join(dm.DIR_CACHE, self.name)
@@ -230,13 +267,51 @@ class Package():
 			dest = self.chrooted_get_path(dest, chroot)
 			Os.mkdir(dest)
 			p.dr(f"Creating {dest}")
-
 		else:
 			self.prepare_tarball_real(src, self.chrooted_get_path(dest, chroot))
+
+	def is_good_link(self, link_path):
+		ptr_path = os.readlink(link_path)
+		root_path = dm.ROOT_PATH
+		if root_path == "":
+			root_path = "/"
+		joined_path = os.path.join(root_path, ptr_path.removeprefix("/"))
+		if os.path.exists(joined_path):
+			return True
+		if os.path.islink(joined_path):
+			return self.is_good_link(joined_path)
+		return False
+
+	def	is_good_cmd(self, cmd):
+		for path in dm.PATH:
+			root_path = os.path.join(os.path.join(dm.ROOT_PATH, path.removeprefix("/")), cmd)
+			if os.path.islink(root_path):
+				# return self.is_good_link(root_path)
+				return True
+			if os.path.exists(root_path):
+				return True
+		return False
+
+	def is_installed(self):
+		if self.files == None:
+			return False
+		for file in self.files:
+			if file.startswith("/"):
+				tmp_path = os.path.join(dm.ROOT_PATH, dm.PREFIX.removeprefix("/"))
+				tmp_path = os.path.join(tmp_path, file.removeprefix("/"))
+				if not os.path.islink(tmp_path) and not os.path.exists(tmp_path):
+					p.warn(file)
+					return False
+			else:
+				if not self.is_good_cmd(file):
+					p.warn(file)
+					return False
+		return True
 
 	@staticmethod
 	def info_col(
 			name,
+			update_status,
 			status,
 			version,
 			reference,
@@ -244,15 +319,16 @@ class Package():
 		):
 		return p.col([
 			(name, 20),
-			(version, 15),
+			(update_status, 15),
 			(status, 15),
+			(version, 15),
 			(reference, 15),
 			(link, 50),
 		])
 
 	@staticmethod
 	def hdr_info():
-		p.title(Package.info_col("Name","Status", "Version", "reference", "link") + "\n")
+		p.title(Package.info_col("Name","UpdateStatus", "Status", "Version", "reference", "link") + "\n")
 
 	def info(self):
 		pfunc = p.info
@@ -266,20 +342,22 @@ class Package():
 			status = "Up-to-date"
 
 		if pfunc is not p.fail and self.reference:
-			pfunc = p.warn
-		pfunc(Package.info_col(self.name, status, self.version, self.reference, self.link))
+			pfunc = p.ref
+		pfunc(Package.info_col(
+			self.name,
+			status,
+			"Installed" if self.is_installed() else "Not Installed",
+			self.version,
+			self.reference,
+			self.link
+		))
 
 		# if self.dependencies:
 		# 	p.title(f"  - Dependencies:")
 		# 	if self.dependencies.get("required"):
-		# 		p.info(f"    - Required:")
+		# 		p.title(f"    - Required:")
 		# 		for i in self.dependencies["required"]:
-		# 			p.info(f"      - {i}")
-		# 	if self.dependencies.get("optional"):
-		# 		p.info(f"    - Optional:")
-		# 		for i in self.dependencies["optional"]:
-		# 			p.info(f"      - {i}")
-		# 	print()
+		# 			print(f"      - {i}")
 
 	def save_update(self):
 		if self.new_link == None:
@@ -390,7 +468,8 @@ class Package():
 			path = self.patch_get_path(name)
 		if os.path.exists(path):
 			return
-		url_handler.download_file(url, path)
+		if not url_handler.download_file(url, path):
+			sys.exit(1)
 
 	def apply_patch(self, name, opt):
 		# TODO:
@@ -409,7 +488,7 @@ class Package():
 		self.real_root = os.open("/", os.O_RDONLY)
 
 		if dest is None:
-			dest = dm.PREFIX
+			dest = dm.ROOT_PATH
 
 		os.chroot(dest)
 		os.chdir(".")
@@ -436,3 +515,12 @@ class Package():
 			copy_func = shutil.copy2
 
 		copy_func(file_path, dest_path)
+
+	def	install_blfs_systemd_units(self, unit_name: str):
+		# if not dm.conf.is_installed("systemd"):
+		# 	p.warn("Systemd is not installed")
+		# 	return
+		systemd_units = dm.conf.get_package("blfs-systemd-units")
+		systemd_units.prepare_tarball(chroot = self.chrooted)
+		Os.take(self.chrooted_get_path(systemd_units.tar_folder, self.chrooted))
+		self.cmd_run(f"make install-{unit_name}")

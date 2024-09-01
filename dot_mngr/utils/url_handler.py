@@ -47,7 +47,10 @@ def download_file(url, path):
 	try:
 		urllib.request.urlretrieve(url, path, pb.download_hook)
 	except urllib.request.URLError as e:
-		p.warn(f"Could not download {path}, error: {e.code}")
+		msg = f"Could not download {path}"
+		if getattr(e, "code", None):
+			msg += f", code: {e.code}"
+		p.warn(msg)
 		return False
 
 	return True

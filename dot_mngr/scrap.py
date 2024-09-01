@@ -74,12 +74,12 @@ class Scrap():
 		if scrapped[0].startswith("https"):
 			new_url = scrapped[0]
 		else:
-			new_url = f"{package.value}/{scrapped[0]}/"
-			version = r.version.findall(new_url)
-			if len(version) == 0:
-				return (None, None)
-			new_url += f"{package.prefix}{version[0]}{package.suffix}"
-		return self.post_scrap_version(package, new_url)
+			new_url = f"{package.value}/{scrapped[0]}"
+		old_value = package.value
+		package.value = new_url
+		new_url, version = self.scrap_apache(package)
+		package.value = old_value
+		return new_url, version
 
 	def scrap_apache_no_sort(self, package):
 		html = url_handler.req(Request(package.value))

@@ -46,7 +46,7 @@ class Ansi():
 		self.P_DRY_RUN = f"[{self.CYA}{self.UND}DEBUG{self.RSTUND}]"
 		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
 		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
-
+		self.P_REF = f"[{self.RED}@{self.RSTITA}]"
 		## HELP META
 		self.HM_PATH = f"{self.RED}PATH{self.RST}"
 		self.HM_INT = f"{self.RED}INT{self.RST}"

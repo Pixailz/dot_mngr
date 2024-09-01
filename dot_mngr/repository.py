@@ -32,11 +32,12 @@ class Repository():
 		self.init_repo()
 
 	def init_repo(self):
+		print(f"Repo {self.name} ", end="")
 		if os.path.isdir(self.base_dir):
-			print("Repo already here")
+			print("already here")
 			# Git.update(self.base_dir)
 		else:
-			print("Repo not here")
+			print("not here")
 			Git.clone(self.link, self.branch, self.base_dir)
 		self.load_packages()
 
