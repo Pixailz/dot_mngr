@@ -90,7 +90,6 @@ class Parsing():
 			"--dry-run", "-D",
 			action="store_true",
 			help="do not install anything, just show what would be done",
-			default=False,
 			dest="glob_dry_run",
 		)
 
@@ -121,7 +120,6 @@ class Parsing():
 			"--write-html",
 			action="store_true",
 			help="write the scraped HTML file",
-			default=False,
 			dest="upda_write_html",
 		)
 
@@ -155,7 +153,7 @@ class Parsing():
 
 		install.add_argument(
 			"--force-install", "-F",
-			type=bool,
+			action="store_true",
 			help="force installation of already installed packages",
 			dest="inst_force_install",
 		)
@@ -165,6 +163,13 @@ class Parsing():
 			type=str,
 			nargs="+",
 			help="the package to install",
+		)
+
+		install.add_argument(
+			"--xorg-prefix",
+			type=str,
+			help="override XORG_PREFIX",
+			dest="inst_xorg_prefix",
 		)
 
 	def add_command_info(self):
@@ -257,9 +262,10 @@ class Parsing():
 		self.post_parse_install_disable_check()
 		self.post_parse_install_extract_folder()
 		self.post_parse_install_force_install()
+		self.post_parse_install_xorg()
 
 	def post_parse_install_disable_check(self):
-		dm.DO_CHECK =self.get_default(
+		dm.DO_CHECK = self.get_default(
 			"DO_CHECK", "inst_disable_check", dm.DO_CHECK
 		)
 		if Check.IsFalse(dm.DO_CHECK):
@@ -282,3 +288,15 @@ class Parsing():
 			dm.FORCE_INSTALL = False
 		else:
 			dm.FORCE_INSTALL = True
+
+	def post_parse_install_xorg(self):
+		dm.XORG_PREFIX = self.get_default(
+			"XORG_PREFIX", "inst_xorg_prefix", None
+		)
+		if dm.XORG_PREFIX is None:
+			dm.XORG_PREFIX = dm.PREFIX
+
+		dm.XORG_CONFIG = f"--prefix={dm.XORG_PREFIX}"
+		dm.XORG_CONFIG += f" --sysconfdir=/etc"
+		dm.XORG_CONFIG += f" --localstatedir=/var"
+		dm.XORG_CONFIG += f" --disable-static"

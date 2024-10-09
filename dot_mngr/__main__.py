@@ -18,6 +18,8 @@ def	main():
 		print(f"{NB_PROC           = }")
 		print(f"{TARGET_TRIPLET    = }")
 		print(f"{ARCH              = }")
+		print(f"{XORG_PREFIX       = }")
+		print(f"{XORG_CONFIG       = }")
 
 	match conf.parsing.args.command:
 		case "update":
@@ -26,6 +28,8 @@ def	main():
 			conf.install_package()
 		case "info":
 			conf.info_package()
+		case "debug":
+			conf.debug()
 
 	p.info("end")
 

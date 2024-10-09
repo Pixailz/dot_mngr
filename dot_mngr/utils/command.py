@@ -21,9 +21,6 @@ def default_uninstall(self):
 	p.warn(f"Uninstall command not found for {self.name}")
 
 def default_suite(self):
-	if not os.path.exists("configure") and os.path.exists("autogen.sh"):
-		self.cmd_run("sh autogen.sh")
-
 	self.cmd["configure"]()
 	configure_kernel = self.cmd.get("configure_kernel", None)
 	if configure_kernel is not None:
@@ -45,7 +42,7 @@ def default_suite(self):
 		self.unchroot()
 
 	os.chdir(self.oldpwd)
-	shutil.rmtree(self.tar_folder)
+	shutil.rmtree(self.archive_folder)
 
 def a_cmd(self, func, title = None):
 	def wrapper():

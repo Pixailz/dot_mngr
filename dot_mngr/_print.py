@@ -99,5 +99,13 @@ class	Print():
 		):
 		self.print(string, a.P_REF)
 
+	@staticmethod
+	def p_elapsed(msg=""):
+		global ELAPSED_LVL
+		ELAPSED_LVL += 1
+
+		elapsed_lvl = f"\x1b[2m{ELAPSED_LVL:02d}\x1b[22m"
+		elapsed_time = f"\x1b[4m{timer() - BEGIN_TS:.3f}\x1b[24m"
+		print(f"[{elapsed_lvl}][{elapsed_time}] {msg}")
 
 _print = Print()

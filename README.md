@@ -106,3 +106,7 @@ for a *reference* section:
 ### P4
 
 1. meta.json: reference of reference not working
+
+```
+ 'blfs@1_dbus']
+```

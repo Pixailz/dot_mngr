@@ -5,7 +5,7 @@ import dot_mngr as dm
 def default_kernel_configure(self):
 	self.chroot()
 	self.cmd_run("make mrproper && make defconfig")
-	config_dest = f"/sources/{os.path.basename(self.tar_folder)}/.config"
+	config_dest = f"/sources/{os.path.basename(self.archive_folder)}/.config"
 	config_source = f"/boot/config-{self.version}"
 	self.cmd_run(
 		f"if [ -f '{config_source}' ]; then"
@@ -48,6 +48,6 @@ def default_kernel_install(self):
 
 	self.cmd_run(f"tar -xf /sources/{self.file_name} -C {dm.PREFIX}/src")
 	self.cmd_run(
-		f'mv "{dm.PREFIX}/src/{os.path.basename(self.tar_folder)}"'
+		f'mv "{dm.PREFIX}/src/{os.path.basename(self.archive_folder)}"'
 		f' "{dm.PREFIX}/src/kernel-{self.version}"'
 	)

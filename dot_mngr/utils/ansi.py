@@ -43,7 +43,7 @@ class Ansi():
 		self.P_PASS = f"[{self.BOL}{self.GRE}+{self.RSTBOL}]"
 		self.P_FAIL = f"[{self.BOL}{self.RED}-{self.RSTBOL}]"
 		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
-		self.P_DRY_RUN = f"[{self.CYA}{self.UND}DEBUG{self.RSTUND}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}~{self.RSTUND}]"
 		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
 		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
 		self.P_REF = f"[{self.RED}@{self.RSTITA}]"

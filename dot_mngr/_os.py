@@ -3,8 +3,6 @@ from dot_mngr import shutil
 
 import dot_mngr as dm
 
-from pprint import pprint
-
 class Os():
 	@staticmethod
 	def mkdir(path: str, clean: bool = False):
@@ -24,6 +22,7 @@ class Os():
 	def rmdir(path: str):
 		return shutil.rmtree(path)
 
+	@staticmethod
 	def get_path_is_bad_directory(root):
 		splitted = root.removeprefix(os.sep).split(os.sep)
 		match splitted[0]:
@@ -35,21 +34,27 @@ class Os():
 				return True
 		return False
 
+	@staticmethod
 	def	find(self, target, path = None):
 		if path is None:
 			path = dm.PREFIX
 
 		for root, dirs, files in os.walk(path, followlinks=False):
-			if self.get_path_is_bad_directory(root.removeprefix(dm.PREFIX)):
+			if Os.get_path_is_bad_directory(root.removeprefix(dm.PREFIX)):
 				break
 			for file in files:
 				if file == target:
 					return os.path.join(path, file)
 			for directory in dirs:
-				tmp = self.get_path(target, os.path.join(path, directory))
+				tmp = Os.get_path(target, os.path.join(path, directory))
 				if tmp is not None:
 					return tmp
 		return None
 
-	def path_j(self, *args):
-		return os.path.join(*args)
+	@staticmethod
+	def	shrink_path(path: str):
+		if path.startswith(CWD):
+			return path.replace(CWD, ".")
+		if path.startswith(HOME):
+			return path.replace(HOME, "~")
+		return path

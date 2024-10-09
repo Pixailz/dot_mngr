@@ -48,12 +48,25 @@ class Ansi():
 		self.P_PASS = f"[{self.BOL}{self.GRE}+{self.RSTBOL}]"
 		self.P_FAIL = f"[{self.BOL}{self.RED}-{self.RSTBOL}]"
 		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
-		self.P_DRY_RUN = f"[{self.CYA}{self.UND}DEBUG{self.RSTUND}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}~{self.RSTUND}]"
 		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
 		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
 
+
+		## PRINT FUNCTION HEADER
+		self.SEP	= f" "
+		self.P_INFO = f"[{self.BOL}{self.BLU}*{self.RSTBOL}]"
+		self.P_WARN = f"[{self.BOL}{self.ORA}!{self.RSTBOL}]"
+		self.P_PASS = f"[{self.BOL}{self.GRE}+{self.RSTBOL}]"
+		self.P_FAIL = f"[{self.BOL}{self.RED}-{self.RSTBOL}]"
+		self.P_TITL = f"[{self.YEL}{self.BOL}#{self.RSTBOL}]"
+		self.P_DRY_RUN = f"[{self.CYA}{self.UND}~{self.RSTUND}]"
+		self.P_CMD_OUT = f"[{self.GRE}{self.BOL}>{self.RSTBOL}]"
+		self.P_CMD_ERR = f"[{self.RED}{self.BOL}>{self.RSTBOL}]"
+		self.P_REF = f"[{self.RED}@{self.RSTITA}]"
 		## HELP META
-		self.HM_DIR = f"{self.BOL}DIR{self.RBOL}"
+		self.HM_PATH = f"{self.RED}PATH{self.RST}"
+		self.HM_INT = f"{self.RED}INT{self.RST}"
 
 		## TEST
 		self.SEP1 = f"{self.BOL}{self.CYA}{'=' * 80}{self.RSTBOL}"

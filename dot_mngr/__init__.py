@@ -23,14 +23,6 @@ from pprint import pprint
 BEGIN_TS = timer()
 ELAPSED_LVL = 0
 
-def p_elapsed(msg=""):
-	global ELAPSED_LVL
-	ELAPSED_LVL += 1
-
-	elapsed_lvl = f"\x1b[2m{ELAPSED_LVL:02d}\x1b[22m"
-	elapsed_time = f"\x1b[4m{timer() - BEGIN_TS:.3f}\x1b[24m"
-	print(f"[{elapsed_lvl}][{elapsed_time}] {msg}")
-
 # PARSED ARGS
 DEBUG			= True
 ## GLOBAL
@@ -38,6 +30,8 @@ DRY_RUN			= False
 PREFIX			= "/usr"
 ROOT_PATH		= ""
 NB_PROC			= os.cpu_count()
+XORG_PREFIX		= ""
+XORG_CONFIG		= ""
 
 ## UPDATE
 WRITE_HTML		= False
@@ -54,6 +48,7 @@ TARGET_TRIPLET	= subprocess.run(
 ).stdout.decode("utf-8").strip("\n")
 
 METADATA		= dict(md.metadata("dot_mngr"))
+REPO_SEP		= "@"
 
 CWD				= os.getcwd()
 # DIR_BASE		= os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -74,20 +69,13 @@ DIR_LOG			= os.path.join(DIR_CONFIG, "log")
 FILE_META		= "meta.json"
 FILE_COMMAND	= "command.py"
 
-TERM_COLS, TERM_ROWS = shutil.get_terminal_size(fallback=(120, 50))
+TERM_COLS, TERM_ROWS		= shutil.get_terminal_size(fallback=(120, 50))
 
-PROMPT_RIGHT_SIZE = 60
-PROMPT_PROGRESS_BAR_SIZE = PROMPT_RIGHT_SIZE - 10
+PROMPT_RIGHT_SIZE			= 60
+PROMPT_PROGRESS_BAR_SIZE	= PROMPT_RIGHT_SIZE - 10
 
 # LOADING ENV
 ENV_FILE = os.path.join(DIR_CONFIG, ".env")
-
-def	shrink_path(path: str):
-	if path.startswith(CWD):
-		return path.replace(CWD, ".")
-	if path.startswith(HOME):
-		return path.replace(HOME, "~")
-	return path
 
 ENV = dict()
 
@@ -108,62 +96,59 @@ except FileNotFoundError as e:
 	pass
 
 # CTYPE
-from	.utils.ctype			import CTYPE
+from	.utils.ctype				import CTYPE
 # Check
-from	.utils.check.main		import Check
+from	._check.main				import Check
 
 # KERNEL
-from 	.kernel					import Kernel
+from 	.utils.kernel				import Kernel
 
 # EXCEPTION
-from	.exception				import RepoError
+from	.utils.exception			import RepoError
 
 # UTILS
-from 	.utils.regex			import regex				as r
-from	.utils.ansi				import ansi					as a
-from	.utils.git				import Git
+from 	._os						import Os
 
-from	.utils._print			import _print				as p
+from 	._json						import Json
 
-from 	.utils.progress_bar		import ProgressBar
-from 	.utils					import url_handler
-from 	.utils					import unicode				as u
+from 	.utils.regex				import regex				as r
+from	.utils.ansi					import ansi					as a
+from	.utils.git					import Git
 
+from	._print						import _print				as p
 
-from 	.utils._os				import Os
-
-from 	.utils._json			import Json
+from 	.utils.progress_bar			import ProgressBar
+from	.utils						import url_handler
+from	.utils						import unicode as u
 
 # CLI PARSING
-from 	.parsing				import Parsing
+from 	.utils.parsing				import Parsing
 
 # SCRAP
-from 	.scrap					import scrap
+from 	.utils.scrap				import scrap
 
 # COMMAND
-from	.command_kernel			import default_kernel_configure_kernel
-from	.command_kernel			import default_kernel_configure
-from	.command_kernel			import default_kernel_compile
-from	.command_kernel			import default_kernel_install
-from 	.command				import default_configure
-from 	.command				import default_compile
-from 	.command				import default_check
-from 	.command				import default_install
-from 	.command				import default_uninstall
-from 	.command				import default_suite
-from 	.command				import a_cmd
+from	.utils.command_kernel		import default_kernel_configure_kernel
+from	.utils.command_kernel		import default_kernel_configure
+from	.utils.command_kernel		import default_kernel_compile
+from	.utils.command_kernel		import default_kernel_install
+from 	.utils.command				import default_configure
+from 	.utils.command				import default_compile
+from 	.utils.command				import default_check
+from 	.utils.command				import default_install
+from 	.utils.command				import default_uninstall
+from 	.utils.command				import default_suite
+from 	.utils.command				import a_cmd
 
-REPO_SEP = "@"
 # PACKAGE
-from	.package				import Package
-from	.package				import get_real_name
+from	.package.utils				import get_real_name
+from	.package.main				import Package
 
 # REPOSITORY
-from	.repository				import Repository
+from	.utils.repository			import Repository
 
 # CONFIG
-from 	.config					import conf
-from	.config					import extract_file_from_package
-from	.config					import get_version_from_package
-from	.config					import get_package_from_name
-from	.config					import download_package
+from 	.config.main				import conf
+from	.config.utils				import extract_file_from_package
+from	.config.utils				import get_version_from_package
+from	.config.utils				import download_package

@@ -20,5 +20,5 @@ setup(
 	long_description=long_description,
 	long_description_content_type="text/markdown",
 	install_requires=required,
-    url='http://pixailz.freeboxos.fr:3000/Pixailz/dot_mngr',
+    url='https://github.com/Pixailz/dot_mngr',
 )

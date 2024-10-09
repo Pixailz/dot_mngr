@@ -10,8 +10,6 @@ from dot_mngr import RepoError
 from dot_mngr import p
 from dot_mngr import DIR_REPO, FILE_META, NB_PROC
 
-from dot_mngr import p_elapsed
-from dot_mngr import pprint
 from dot_mngr import REPO_SEP
 
 class Repository():
@@ -32,12 +30,10 @@ class Repository():
 		self.init_repo()
 
 	def init_repo(self):
-		print(f"Repo {self.name} ", end="")
 		if os.path.isdir(self.base_dir):
-			print("already here")
+			pass
 			# Git.update(self.base_dir)
 		else:
-			print("not here")
 			Git.clone(self.link, self.branch, self.base_dir)
 		self.load_packages()
 
@@ -48,12 +44,11 @@ class Repository():
 	def load_packages(self):
 		self.get_packages()
 		nb_packages = len(self.list_packages)
-		p.info(f"Loading {nb_packages} packages")
 		self.packages = dict()
 		for package in self.list_packages:
 			pack_name = f"{self.name}{REPO_SEP}{package}"
 			self.packages[package] = Package(pack_name, self.base_dir)
-		p.success(f"Loaded {nb_packages} packages")
+		p.success(f"Loaded {nb_packages:4d} packages from {self.name}")
 
 	def update(self, threaded, to_update):
 		p.info("Updating packages")

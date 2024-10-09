@@ -3,11 +3,10 @@ from urllib.request import Request
 from urllib.parse import urlparse
 
 from dot_mngr import datetime
+from dot_mngr import pprint
 
 from dot_mngr import ENV
 from dot_mngr import p, r, url_handler
-
-from dot_mngr import pprint
 
 class Scrap():
 	def __init__(self):
@@ -30,7 +29,7 @@ class Scrap():
 	def post_scrap_url(self, package, scrapped):
 		if len(scrapped) == 0:
 			return None
-		if scrapped[0].startswith("https"):
+		if scrapped[0].startswith("http"):
 			new_url = scrapped[0]
 		else:
 			m = r.url_parent.match(package.value)
@@ -102,9 +101,10 @@ class Scrap():
 
 		new_url = None
 		for k, v in sorted(result.items(), reverse=True):
-			if package.value.endswith("/"):
-				package.value = package.value.removesuffix("/")
-			new_url = f"{package.value}/{v}"
+			tmp_value = package.value
+			if tmp_value.endswith("/"):
+				tmp_value = tmp_value.removesuffix("/")
+			new_url = f"{tmp_value}/{v}"
 			break
 
 		return self.post_scrap_version(package, new_url)
@@ -122,9 +122,12 @@ class Scrap():
 		for assets in tmp["assets"]:
 			if r.is_package_url(package, assets["browser_download_url"]):
 				new_url = assets["browser_download_url"]
+				break
 
 		if not new_url:
 			return (None, None)
+
+		print()
 
 		return self.post_scrap_version(package, new_url)
 
