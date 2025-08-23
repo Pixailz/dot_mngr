@@ -10,7 +10,7 @@ class PackagePatch(object):
 	def patch_get_path(self, name, chroot = None):
 		if chroot is None:
 			chroot = self.chrooted
-		path = self.chrooted_get_path(self.archive_folder, chroot)
+		path = self.chrooted_get_path(self.archive_dest_folder, chroot)
 		return os.path.join(path, f"{name}.patch")
 
 	def download_patch(self, name, path = None):

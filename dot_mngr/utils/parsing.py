@@ -154,6 +154,7 @@ class Parsing():
 		install.add_argument(
 			"--force-install", "-F",
 			action="store_true",
+			default=None,
 			help="force installation of already installed packages",
 			dest="inst_force_install",
 		)

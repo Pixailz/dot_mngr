@@ -42,7 +42,7 @@ def default_suite(self):
 		self.unchroot()
 
 	os.chdir(self.oldpwd)
-	shutil.rmtree(self.archive_folder)
+	shutil.rmtree(self.archive_dest_folder)
 
 def a_cmd(self, func, title = None):
 	def wrapper():

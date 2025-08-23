@@ -38,7 +38,6 @@ WRITE_HTML		= False
 
 ## INSTALL
 DO_CHECK		= True
-DO_CHROOT		= False
 FORCE_INSTALL	= False
 
 TARGET_TRIPLET	= subprocess.run(

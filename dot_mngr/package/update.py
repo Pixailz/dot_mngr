@@ -61,7 +61,7 @@ class PackageUpdate(object):
 		return path
 
 	def take_build(self):
-		path = os.path.join(self.archive_folder, "build")
+		path = os.path.join(self.archive_dest_folder, "build")
 		if not self.chrooted is None:
 			path = path.replace(self.chrooted, "")
 		Os.take(path)
@@ -92,7 +92,7 @@ class PackageUpdate(object):
 		self.chrooted = None
 
 	def copy(self, file_name: str, dest_path: str):
-		file_path = os.path.join(self.archive_folder, file_name)
+		file_path = os.path.join(self.archive_dest_folder, file_name)
 		copy_func = None
 		if not os.path.exists(file_path):
 			p.fail(f"File not found: {file_name}")
@@ -109,5 +109,5 @@ class PackageUpdate(object):
 		# 	return
 		systemd_units = dm.conf.get_package("blfs-systemd-units")
 		systemd_units.prepare_tarball(chroot = self.chrooted)
-		Os.take(self.chrooted_get_path(systemd_units.archive_folder, self.chrooted))
+		Os.take(self.chrooted_get_path(systemd_units.archive_dest_folder, self.chrooted))
 		self.cmd_run(f"make install-{unit_name}")

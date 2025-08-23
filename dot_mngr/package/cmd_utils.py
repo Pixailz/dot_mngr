@@ -26,13 +26,13 @@ class PackageCmdUtils(object):
 		self.env.update(env)
 
 	def take_build(self):
-		path = os.path.join(self.archive_folder, "build")
+		path = os.path.join(self.archive_dest_folder, "build")
 		if not self.chrooted is None:
 			path = path.replace(self.chrooted, "")
 		Os.take(path)
 
 	def copy(self, file_name: str, dest_path: str):
-		file_path = os.path.join(self.archive_folder, file_name)
+		file_path = os.path.join(self.archive_dest_folder, file_name)
 		copy_func = None
 		if not os.path.exists(file_path):
 			p.fail(f"File not found: {file_name}")
@@ -44,12 +44,12 @@ class PackageCmdUtils(object):
 		copy_func(file_path, dest_path)
 
 	def	install_blfs_systemd_units(self, unit_name: str):
-		# if not dm.conf.is_installed("systemd"):
-		# 	p.warn("Systemd is not installed")
-		# 	return
+		if not dm.conf.is_installed("systemd", False):
+			p.warn("Systemd is not installed")
+			return
 		systemd_units = dm.conf.get_package("blfs-systemd-units")
 		systemd_units.prepare_archive(chroot = self.chrooted)
-		Os.take(self.chrooted_get_path(systemd_units.archive_folder, self.chrooted))
+		Os.take(self.chrooted_get_path(systemd_units.archive_dest_folder, self.chrooted))
 		self.cmd_run(f"make install-{unit_name}")
 
 	def generate_configure(self):

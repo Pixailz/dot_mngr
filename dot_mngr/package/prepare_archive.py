@@ -26,9 +26,9 @@ PROFILE = {
 class PackagePrepareArchive(object):
 	def take_archive_folder(self):
 		cwd = os.getcwd()
-		if cwd != self.archive_folder:
+		if cwd != self.archive_dest_folder:
 			self.oldpwd = cwd
-		os.chdir(self.archive_folder)
+		os.chdir(self.archive_dest_folder)
 
 	def prepare_archive_real(self, src: str, dest: str, profile_key: str):
 		profile = PROFILE[profile_key]
@@ -42,13 +42,16 @@ class PackagePrepareArchive(object):
 					break
 
 			if match:
-				self.archive_folder = os.path.join(dm.DIR_CACHE, match.group(1))
+				self.archive_folder = match.group(1)
 			else:
-				self.archive_folder = os.path.join(dm.DIR_CACHE, self.name)
+				self.archive_folder = self.name
 				have_dir = False
+
+			self.archive_dest_folder = os.path.join(dm.DIR_CACHE, self.archive_folder)
+
 		extract_func = getattr(file, profile["extractall"])
-		if os.path.exists(self.archive_folder):
-			shutil.rmtree(self.archive_folder)
+		if os.path.exists(self.archive_dest_folder):
+			shutil.rmtree(self.archive_dest_folder)
 			p.warn("Removing old archive folder")
 
 		if dest is None:
@@ -56,7 +59,7 @@ class PackagePrepareArchive(object):
 			if have_dir:
 				extract_func(dm.DIR_CACHE)
 			else:
-				extract_func(self.archive_folder)
+				extract_func(self.archive_dest_folder)
 			p.success(f"Extracted {self.name}")
 		else:
 			if not os.path.exists(dest):
@@ -69,23 +72,21 @@ class PackagePrepareArchive(object):
 		if chroot is None:
 			chroot = self.chrooted
 		if self.file_path is None:
-			self.archive_folder = os.path.join(dm.DIR_CACHE, self.name)
-			print(self.archive_folder)
-			Os.mkdir(self.archive_folder)
+			self.archive_dest_folder = os.path.join(dm.DIR_CACHE, self.name)
+			print(self.archive_dest_folder)
+			Os.mkdir(self.archive_dest_folder)
 			return
 		src = self.chrooted_get_path(self.file_path, chroot)
 		if dm.DRY_RUN:
 			if dest is None:
-				self.archive_folder = os.path.join(dm.DIR_CACHE, self.name)
-				dest = self.archive_folder
+				self.archive_dest_folder = os.path.join(dm.DIR_CACHE, self.name)
+				dest = self.archive_dest_folder
 
 			dest = self.chrooted_get_path(dest, chroot)
 			Os.mkdir(dest)
 			p.dr(f"Creating {dest}")
 		else:
 			chrooted_path = self.chrooted_get_path(dest, chroot)
-			print(f"{chrooted_path = }")
-			print(f"{src           = }")
 			for key in PROFILE:
 				if PROFILE[key]["check"](src):
 					self.prepare_archive_real(src, chrooted_path, key)

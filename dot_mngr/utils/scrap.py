@@ -127,8 +127,6 @@ class Scrap():
 		if not new_url:
 			return (None, None)
 
-		print()
-
 		return self.post_scrap_version(package, new_url)
 
 	def scrap_gitlab(self, package):

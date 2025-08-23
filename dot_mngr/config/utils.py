@@ -39,7 +39,7 @@ def	extract_file_from_package(
 		return
 
 	package.get_file(chroot)
-	package.prepare_tarball(dest, chroot)
+	package.prepare_archive(dest, chroot)
 
 def	get_version_from_package(
 		package_name: str
